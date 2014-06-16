@@ -1,0 +1,450 @@
+XL
+H 5 areas 2E global symbols
+M hexapod_basic.c
+S push_xgsetF000 Ref0000
+S push_xgset30FC Ref0000
+S push_xgsetF03C Ref0000
+S _angle_1A Ref0000
+S _angle_2A Ref0000
+S _angle_1B Ref0000
+S _angle_3A Ref0000
+S _angle_2B Ref0000
+S _angle_1C Ref0000
+S _angle_4A Ref0000
+S _angle_3B Ref0000
+S _angle_2C Ref0000
+S _angle_5A Ref0000
+S _angle_4B Ref0000
+S _angle_3C Ref0000
+S _angle_6A Ref0000
+S _angle_5B Ref0000
+S _angle_4C Ref0000
+S _buzzer_on Ref0000
+S _angle_6B Ref0000
+S _angle_5C Ref0000
+S _angle_6C Ref0000
+S push_xgsetF0FC Ref0000
+S empy16s Ref0000
+S _buzzer_off Ref0000
+S pop_xgsetF000 Ref0000
+S asgncblkx Ref0000
+S pop_xgset30FC Ref0000
+S pop_xgsetF03C Ref0000
+S pop_xgsetF0FC Ref0000
+A text size 3FC flags 0
+dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+dbfunc e initializeAngles 0 fV
+dbsym r i 14 I
+dbsym r j 16 I
+dbline FFFFFFFF 4
+dbline 3F 4
+dbline 42 4
+dbline 42 8
+dbline 43 8
+dbline 43 C
+dbline 44 C
+dbline 45 2A
+dbline 43 2A
+dbline 43 2E
+dbline 46 36
+dbline 42 36
+dbline 42 3A
+dbline FFFFFFFE 42
+dbline 0 42
+dbfunc e angle 46 fV
+dbsym r angle A c
+dbsym r motor 14 c
+dbsym r arm C c
+dbline FFFFFFFF 52
+dbline 5A 52
+dbline 5B 52
+dbline 5C 5A
+dbline 5E 98
+dbline 5F 9C
+dbline 60 A4
+dbline 61 A8
+dbline 62 B0
+dbline 63 B6
+dbline 64 BC
+dbline 66 BE
+dbline 67 C2
+dbline 68 CA
+dbline 69 CE
+dbline 6A D6
+dbline 6B DC
+dbline 6C E2
+dbline 6E E4
+dbline 6F E8
+dbline 70 F0
+dbline 71 F4
+dbline 72 FC
+dbline 73 102
+dbline 74 108
+dbline 76 10A
+dbline 77 10E
+dbline 78 116
+dbline 79 11A
+dbline 7A 12A
+dbline 7B 130
+dbline 7C 13E
+dbline 7E 140
+dbline 7F 144
+dbline 80 14C
+dbline 81 150
+dbline 82 160
+dbline 83 164
+dbline 84 172
+dbline 86 174
+dbline 87 178
+dbline 88 180
+dbline 89 184
+dbline 8A 194
+dbline 8B 198
+dbline 8C 1A6
+dbline FFFFFFFE 1A6
+dbline 0 1A6
+dbfunc e angle_XA 1AC fV
+dbsym r angle A c
+dbline FFFFFFFF 1B0
+dbline 95 1B0
+dbline 96 1B0
+dbline 97 1B6
+dbline 98 1BC
+dbline 99 1C2
+dbline 9A 1C8
+dbline 9B 1CE
+dbline FFFFFFFE 1D4
+dbline 0 1D4
+dbfunc e angle_XB 1D8 fV
+dbsym r angle A c
+dbline FFFFFFFF 1DC
+dbline A2 1DC
+dbline A3 1DC
+dbline A4 1E2
+dbline A5 1E8
+dbline A6 1EE
+dbline A7 1FC
+dbline A8 20A
+dbline FFFFFFFE 218
+dbline 0 218
+dbfunc e angle_XC 21C fV
+dbsym r angle A c
+dbline FFFFFFFF 220
+dbline B0 220
+dbline B1 220
+dbline B2 226
+dbline B3 22C
+dbline B4 232
+dbline B5 240
+dbline B6 24E
+dbline FFFFFFFE 25C
+dbline 0 25C
+dbfunc e swap 260 fV
+dbsym r t A c
+dbsym r b 12 pc
+dbsym r a 10 pc
+dbline FFFFFFFF 262
+dbline BE 262
+dbline BF 262
+dbline C0 266
+dbline C1 26E
+dbline FFFFFFFE 272
+dbline 0 272
+dbfunc e setAngle 276 fV
+dbsym l angle 0 c
+dbsym r motor 12 c
+dbsym r arm 10 c
+dbline FFFFFFFF 276
+dbline C4 276
+dbline C5 276
+dbline FFFFFFFE 294
+dbline 0 294
+dbfunc e getAngle 296 fc
+dbsym r motor 12 c
+dbsym r arm 10 c
+dbline FFFFFFFF 296
+dbline C8 296
+dbline C9 296
+dbline FFFFFFFE 2B2
+dbline 0 2B2
+dbfunc e buzzer_on_off 2B4 fV
+dbline FFFFFFFF 2B4
+dbline D0 2B4
+dbline D2 2B4
+dbline D2 2C4
+dbline D3 2C4
+dbline D4 2C8
+dbline D5 2D4
+dbline D5 2D6
+dbline D6 2D6
+dbline D7 2DA
+dbline D8 2E6
+dbline FFFFFFFE 2E6
+dbline 0 2E6
+dbfunc e angle_change 2E8 fV
+dbsym r angle1 14 c
+dbsym r change 16 c
+dbsym r motor C c
+dbsym r arm A c
+dbline FFFFFFFF 2F4
+dbline DF 2F4
+dbline E3 2F4
+dbline E3 312
+dbline E4 312
+dbline E6 314
+dbline E6 316
+dbline E6 328
+dbline E7 328
+dbline E9 32A
+dbline E9 32C
+dbline EA 32C
+dbline EB 338
+dbline EC 338
+dbline FFFFFFFE 340
+dbline 0 340
+dbfunc e setMirrorDir 346 fV
+dbsym r dir 10 c
+dbline FFFFFFFF 346
+dbline F5 346
+dbline F6 346
+dbline FFFFFFFE 34A
+dbline 0 34A
+dbfunc e getMirrorDir 34C fc
+dbline FFFFFFFF 34C
+dbline FC 34C
+dbline FD 34C
+dbline FFFFFFFE 350
+dbline 0 350
+dbfunc e getMirrorArm 352 fc
+dbsym l arr_mirror 0 A[36:3:6]I
+dbsym r arm A c
+dbline FFFFFFFF 358
+dbline 103 358
+dbline 104 358
+dbline 107 36E
+dbline FFFFFFFE 38C
+dbline 0 38C
+dbfunc e angleMirror 392 fV
+dbsym r arm_mirror A c
+dbsym r angleSet C c
+dbsym r motor 14 c
+dbsym r arm E c
+dbline FFFFFFFF 39E
+dbline 111 39E
+dbline 112 39E
+dbline 113 3A4
+dbline 114 3AC
+dbline 115 3B0
+dbline 117 3C6
+dbline FFFFFFFE 3CE
+dbline 0 3CE
+dbfunc e angleMirrorChange 3D4 fV
+dbsym r arm_mirror A c
+dbsym r angleChange E c
+dbsym r motor C c
+dbsym r arm 14 c
+dbline FFFFFFFF 3E0
+dbline 121 3E0
+dbline 122 3E0
+dbline 123 3E6
+dbline 124 3EE
+dbline FFFFFFFE 3F6
+dbline 0 3F6
+S _swap Def0260
+S _angleMirrorChange Def03D4
+S _angle_change Def02E8
+S _getMirrorDir Def034C
+S _getMirrorArm Def0352
+S _setMirrorDir Def0346
+S _angle_XA Def01AC
+S _angle_XB Def01D8
+S _angle_XC Def021C
+S _angle Def0046
+S _getAngle Def0296
+S _setAngle Def0276
+S _buzzer_on_off Def02B4
+S _angleMirror Def0392
+S _initializeAngles Def0000
+A data size 3 flags 20
+dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+dbsym s dirMirror 0 c
+dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+dbsym s flag 1 I
+A idata size 3 flags 0
+A lit size 24 flags 0
+A bss size 12 flags 20
+dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+dbsym e angleArr 0 A[18:6:3]c
+S _angleArr Def0000
+T 00 00 00
+R 00 00 02 00
+T 00 00 0E 94 00 00 44 27 55 27 66 27 77 27 03 E0
+R 00 00 00 00 12 04 00 00
+T 0E 00 10 E0 9A 01 0E 94 00 00 18 01 80 E0
+R 00 00 00 00 12 08 17 00 20 0C 04 00 00 00
+T 1A 00 90 E0 28 0E 39 1E FB 01 E2 0D F3 1D 8A E5
+R 00 00 00 00 40 02 04 00 00 00
+T 28 00 80 83 6F 5F 7F 4F 63 30 E0 E0 7E 07 5C F3
+R 00 00 00 00
+T 36 00 4F 5F 5F 4F 46 30 E0 E0 5E 07 1C F3
+R 00 00 00 00
+T 42 00 0C 94 00 00
+R 00 00 00 00 12 04 19 00
+T 46 00 0E 94 00 00 42 2F C0 2E 21 97 A9 84 A8 82
+R 00 00 00 00 12 04 02 00
+T 54 00 24 2F 0C 2D 0E D1 6C 2D 77 27 61 30 E0 E0
+R 00 00 00 00
+T 62 00 7E 07 C9 F0 62 30 E0 E0 7E 07 41 F1 63 30
+R 00 00 00 00
+T 70 00 E0 E0 7E 07 09 F4 36 C0 64 30 E0 E0 7E 07
+R 00 00 00 00
+T 7E 00 09 F4 44 C0 65 30 E0 E0 7E 07 09 F4 5A C0
+R 00 00 00 00
+T 8C 00 66 30 E0 E0 7E 07 09 F4 6F C0 87 C0 41 34
+R 00 00 00 00
+T 9A 00 21 F4 0A 2D 0E 94 00 00 81 C0 42 34 21 F4
+R 00 00 00 00 12 08 03 00
+T A8 00 0A 2D 0E 94 00 00 7B C0 43 34 09 F0 78 C0
+R 00 00 00 00 12 06 05 00
+T B6 00 0A 2D 0E 94 00 00 74 C0 41 34 21 F4 0A 2D
+R 00 00 00 00 12 06 08 00
+T C4 00 0E 94 00 00 6E C0 42 34 21 F4 0A 2D
+R 00 00 00 00 12 04 04 00
+T D0 00 0E 94 00 00 68 C0 43 34 09 F0 65 C0 0A 2D
+R 00 00 00 00 12 04 07 00
+T DE 00 0E 94 00 00 61 C0 41 34 21 F4 0A 2D
+R 00 00 00 00 12 04 0B 00
+T EA 00 0E 94 00 00 5B C0 42 34 21 F4 0A 2D
+R 00 00 00 00 12 04 06 00
+T F6 00 0E 94 00 00 55 C0 43 34 09 F0 52 C0 0A 2D
+R 00 00 00 00 12 04 0A 00
+T 04 01 0E 94 00 00 4E C0 41 34 21 F4 0A 2D
+R 00 00 00 00 12 04 0E 00
+T 10 01 0E 94 00 00 48 C0 42 34 41 F4 2A 2C 33 24
+R 00 00 00 00 12 04 09 00
+T 1E 01 04 EB 02 19 13 09 0E 94 00 00 3E C0 43 34
+R 00 00 00 00 12 0A 0D 00
+T 2C 01 09 F0 3B C0 2A 2C 33 24 04 EB 02 19 13 09
+R 00 00 00 00
+T 3A 01 0E 94 00 00 33 C0 41 34 21 F4 0A 2D
+R 00 00 00 00 12 04 11 00
+T 46 01 0E 94 00 00 2D C0 42 34 41 F4 2A 2C 33 24
+R 00 00 00 00 12 04 0C 00
+T 54 01 04 EB 02 19 13 09 0E 94 00 00 23 C0 43 34
+R 00 00 00 00 12 0A 10 00
+T 62 01 09 F5 2A 2C 33 24 04 EB 02 19 13 09
+R 00 00 00 00
+T 6E 01 0E 94 00 00 19 C0 41 34 21 F4 0A 2D
+R 00 00 00 00 12 04 14 00
+T 7A 01 0E 94 00 00 13 C0 42 34 41 F4 2A 2C 33 24
+R 00 00 00 00 12 04 0F 00
+T 88 01 04 EB 02 19 13 09 0E 94 00 00 09 C0 43 34
+R 00 00 00 00 12 0A 13 00
+T 96 01 39 F4 2A 2C 33 24 04 EB 02 19 13 09
+R 00 00 00 00
+T A2 01 0E 94 00 00 21 96 0C 94 00 00
+R 00 00 00 00 12 04 15 00 12 0A 1C 00
+T AC 01 AA 92 A0 2E 0A 2D 0E 94 00 00 0A 2D
+R 00 00 00 00 12 0A 03 00
+T B8 01 0E 94 00 00 0A 2D 0E 94 00 00 0A 2D
+R 00 00 00 00 12 04 04 00 12 0A 06 00
+T C4 01 0E 94 00 00 0A 2D 0E 94 00 00 0A 2D
+R 00 00 00 00 12 04 09 00 12 0A 0C 00
+T D0 01 0E 94 00 00 A9 90 08 95
+R 00 00 00 00 12 04 0F 00
+T D8 01 AA 92 A0 2E 0A 2D 0E 94 00 00 0A 2D
+R 00 00 00 00 12 0A 05 00
+T E4 01 0E 94 00 00 0A 2D 0E 94 00 00 2A 2C 33 24
+R 00 00 00 00 12 04 07 00 12 0A 0A 00
+T F2 01 04 EB 02 19 13 09 0E 94 00 00 2A 2C 33 24
+R 00 00 00 00 12 0A 0D 00
+T 00 02 04 EB 02 19 13 09 0E 94 00 00 2A 2C 33 24
+R 00 00 00 00 12 0A 10 00
+T 0E 02 04 EB 02 19 13 09 0E 94 00 00 A9 90 08 95
+R 00 00 00 00 12 0A 13 00
+T 1C 02 AA 92 A0 2E 0A 2D 0E 94 00 00 0A 2D
+R 00 00 00 00 12 0A 08 00
+T 28 02 0E 94 00 00 0A 2D 0E 94 00 00 2A 2C 33 24
+R 00 00 00 00 12 04 0B 00 12 0A 0E 00
+T 36 02 04 EB 02 19 13 09 0E 94 00 00 2A 2C 33 24
+R 00 00 00 00 12 0A 11 00
+T 44 02 04 EB 02 19 13 09 0E 94 00 00 2A 2C 33 24
+R 00 00 00 00 12 0A 14 00
+T 52 02 04 EB 02 19 13 09 0E 94 00 00 A9 90 08 95
+R 00 00 00 00 12 0A 15 00
+T 60 02 AA 92 F8 01 A0 80 F9 01 20 80 F8 01 20 82
+R 00 00 00 00
+T 6E 02 F9 01 A0 82 A9 90 08 95
+R 00 00 00 00
+T 76 02 83 E0 80 9F 10 01 80 E0 90 E0 28 0E 39 1E
+R 00 00 00 00 20 08 04 00 00 00 40 0A 04 00 00 00
+T 84 02 E2 2F FF 27 E1 54 F0 40 E2 0D F3 1D 08 80
+R 00 00 00 00
+T 92 02 00 82 08 95
+R 00 00 00 00
+T 96 02 83 E0 80 9F 10 01 80 E0 90 E0 28 0E 39 1E
+R 00 00 00 00 20 08 04 00 00 00 40 0A 04 00 00 00
+T A4 02 E2 2F FF 27 E1 54 F0 40 E2 0D F3 1D 00 81
+R 00 00 00 00
+T B2 02 08 95
+R 00 00 00 00
+T 01 00 01 00
+R 00 00 02 00
+T B4 02 20 90 01 00 30 90 02 00 22 20 11 F4 33 20
+R 00 00 00 00 00 04 01 00 00 08 01 00
+T C2 02 49 F0 0E 94 00 00 22 24 33 24 30 92 02 00
+R 00 00 00 00 12 06 12 00 00 0E 01 00
+T D0 02 20 92 01 00 08 C0 0E 94 00 00 81 E0 90 E0
+R 00 00 00 00 00 04 01 00 12 0A 18 00
+T DE 02 90 93 02 00 80 93 01 00 08 95
+R 00 00 00 00 00 04 01 00 00 08 01 00
+T E8 02 0E 94 00 00 C2 2E A0 2E 21 97 6B 85 2C 2D
+R 00 00 00 00 12 04 16 00
+T F6 02 0A 2D CE DF 86 2F 80 0F 80 30 40 F0 2C 2D
+R 00 00 00 00
+T 04 03 0A 2D C7 DF 26 2E 20 0E 80 EF 82 15 10 F4
+R 00 00 00 00
+T 12 03 44 27 11 C0 2C 2D 0A 2D BD DF E0 2E 26 2E
+R 00 00 00 00
+T 20 03 20 0E 84 EB 82 15 10 F4 44 EB 06 C0 2C 2D
+R 00 00 00 00
+T 2E 03 0A 2D B2 DF E0 2E 46 2F 40 0F 48 83 2C 2D
+R 00 00 00 00
+T 3C 03 0A 2D 83 DE 21 96 0C 94 00 00
+R 00 00 00 00 12 0A 1D 00
+T 46 03 00 93 00 00 08 95
+R 00 00 00 00 00 04 01 00
+T 4C 03 00 91 00 00 08 95
+R 00 00 00 00 00 04 01 00
+T 00 00 02 00 01 00 04 00 03 00 06 00 05 00 06 00
+R 00 00 03 00
+T 0E 00 03 00 02 00 05 00 04 00 01 00 04 00 05 00
+R 00 00 03 00
+T 1C 00 06 00 01 00 02 00 03 00
+R 00 00 03 00
+T 52 03 AA 92 A0 2E A4 97 80 E0 90 E0 FE 01 04 E2
+R 00 00 00 00 20 08 03 00 00 00 40 0A 03 00 00 00
+T 60 03 10 E0 FA 93 EA 93 9A 93 8A 93 0E 94 00 00
+R 00 00 00 00 12 0E 1A 00
+T 6E 03 EE DF 8C E0 80 9F 10 01 CE 01 28 0E 39 1E
+R 00 00 00 00
+T 7C 03 EA 2D FF 27 31 97 EE 0F FF 1F E2 0D F3 1D
+R 00 00 00 00
+T 8A 03 00 81 A4 96 A9 90 08 95
+R 00 00 00 00
+T 92 03 0E 94 00 00 42 2F E0 2E 21 97 C9 84 0E 2D
+R 00 00 00 00 12 04 01 00
+T A0 03 D8 DF A0 2E C8 82 24 2F 0E 2D 4D DE 41 34
+R 00 00 00 00
+T AE 03 59 F4 2C 2C 33 24 84 EB 90 E0 82 19 93 09
+R 00 00 00 00
+T BC 03 88 83 24 2F 0A 2D 41 DE 04 C0 C8 82 24 2F
+R 00 00 00 00
+T CA 03 0A 2D 3C DE 21 96 0C 94 00 00
+R 00 00 00 00 12 0A 1B 00
+T D4 03 0E 94 00 00 C2 2E 40 2F 21 97 E9 84 04 2F
+R 00 00 00 00 12 04 01 00
+T E2 03 B7 DF A0 2E E8 82 2C 2D 04 2F 7D DF E8 82
+R 00 00 00 00
+T F0 03 2C 2D 0A 2D 79 DF 21 96 0C 94 00 00
+R 00 00 00 00 12 0C 1B 00

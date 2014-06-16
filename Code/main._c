@@ -1,0 +1,165 @@
+/**
+@mainpage Building a locamotion based Hexapod Application
+@author Group 6 Srijit Dutt 10305056
+
+Mon 08 Nov 2010 12:49:10 AM IST 
+
+ICC AVR 7
+
+Conatins various functions for basic, advanced hexapod motions
+
+
+*/
+
+/*********************************************************************************
+
+   Copyright (c) 2010, ERTS Lab IIT Bombay erts@cse.iitb.ac.in               -*- c -*-
+   All rights reserved.
+
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions are met:
+
+   * Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+
+   * Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in
+     the documentation and/or other materials provided with the
+     distribution.
+
+   * Neither the name of the copyright holders nor the names of
+     contributors may be used to endorse or promote products derived
+     from this software without specific prior written permission.
+
+   * Source code can be used for academic purpose. 
+	 For commercial use permission form the author needs to be taken.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE. 
+
+  Software released under Creative Commence cc by-nc-sa licence.
+  For legal information refer to: 
+  http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode
+
+********************************************************************************/
+
+
+#include <iom2560v.h>
+#include <macros.h>
+#include "hexapod_macro.h"
+#include "hexapod.h"
+#include "hexapod_basic.h"
+#include "hexapod_motions.h"
+#include "gait.h"
+#include "keyboard.h"
+
+extern unsigned char data;
+unsigned char mode;
+unsigned int legNo;
+unsigned int dir;
+unsigned int tempDir;
+double movementScaling;
+
+void main(void) 
+{
+	int i = 100;
+	init_devices();
+	//insert your functional code here...
+	servo_calibration(); //must be called as the first instruction
+	servo_on();//turning on the servo supply
+	initializeAngles();
+	delay(ONE_SEC);
+	delay(ONE_SEC);
+	delay(ONE_SEC);
+
+	delay(ONE_SEC);
+	
+	
+	/*ripple_gait(LEG_1, 10);
+	servo_calibration();
+	delay(ONE_SEC);*/
+
+	mode = 'z';
+	legNo = 1;
+	dir = CLOCK_WISE;
+	movementScaling = 1.0;
+		
+	while(1){
+	
+		switch(mode){
+			case 1:
+				 tripod_gait(legNo, 1);
+				 break;
+			case 2:
+				 tripod_gait_2(legNo, 1);
+				 break;
+			case 3:
+				 tripod_gait_continuous(legNo, 1);
+				 break;
+			case 4:
+				 tripod_gait_insect_continuous(legNo, 1);
+				 break;
+			case 5:
+				 wave_gait(legNo, 1);
+				 break;
+			case 6:
+				 ripple_gait(legNo, 1);
+				 break;
+			case 7:
+				 tempDir = ((legNo + 1) % 6) + 1;
+				 tempDir = ((tempDir + 1) % 6) + 1;
+				 tempDir = 7 - tempDir;
+				 two_leg_gait(legNo, tempDir, 1);
+				 break;
+			case 8:
+				 break;
+			case 9:
+				 break;
+			case 11:
+				 tripod_turn_gait(dir, 1);
+				 break;
+			case 12:
+				 tripod_turn_gait_continuous(dir, 1);
+				 break;
+			case 13:
+				 two_legged_turn_gait(dir, 1);
+				 break;	 
+			case 14:
+				 if (dir == CLOCK_WISE){
+				 	robot_rotate_clockwise_7_5();
+				 }
+				 else{
+				 	  robot_rotate_anticlockwise_7_5();
+				 }
+				 break;
+		    case 21:
+				 tempDir = ((legNo + 1) % 6) + 1;
+				 tempDir = ((tempDir + 1) % 6) + 1;
+				 tempDir = 7 - tempDir;
+				 pose(legNo, tempDir, 10);
+				 break;
+			case 22:
+				 sway(24, CLOCK_WISE);
+				 break;
+		    case 23:
+				 dance(4,5,6);
+				 break;
+			case 24:
+				 climb();
+				 break;
+	   	    default:
+			     break;
+		}
+	}	
+}
+
+

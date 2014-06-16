@@ -1,0 +1,332 @@
+XL
+H 2 areas 16 global symbols
+M lcd.c
+S mod16u Ref0000
+S div16u Ref0000
+S push_xgsetF00C Ref0000
+S push_xgsetF0FC Ref0000
+S _delay Ref0000
+S pop_xgsetF00C Ref0000
+S pop_xgsetF0FC Ref0000
+A text size 2DE flags 0
+dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\lcd.c
+dbfunc e lcd_set_4bit 0 fV
+dbline FFFFFFFF 0
+dbline 17 0
+dbline 18 0
+dbline 1A 8
+dbline 1B A
+dbline 1C C
+dbline 1D 10
+dbline 1E 12
+dbline 1F 1A
+dbline 21 1C
+dbline 23 24
+dbline 24 26
+dbline 25 28
+dbline 26 2C
+dbline 27 2E
+dbline 28 36
+dbline 2A 38
+dbline 2C 40
+dbline 2D 42
+dbline 2E 44
+dbline 2F 48
+dbline 30 4A
+dbline 31 52
+dbline 33 54
+dbline 35 5C
+dbline 36 5E
+dbline 37 60
+dbline 38 64
+dbline 39 66
+dbline 3A 6E
+dbline FFFFFFFE 70
+dbline 0 70
+dbfunc e lcd_init 72 fV
+dbline FFFFFFFF 72
+dbline 3F 72
+dbline 40 72
+dbline 42 7A
+dbline 43 7E
+dbline 44 82
+dbline 45 86
+dbline 46 8A
+dbline FFFFFFFE 8E
+dbline 0 8E
+dbfunc e lcd_wr_command 90 fV
+dbsym r temp 16 c
+dbsym r cmd 14 c
+dbline FFFFFFFF 96
+dbline 4D 96
+dbline 4F 96
+dbline 50 98
+dbline 51 9A
+dbline 52 A0
+dbline 53 A6
+dbline 54 A8
+dbline 55 AA
+dbline 56 AC
+dbline 57 B4
+dbline 59 B6
+dbline 5A B8
+dbline 5B C0
+dbline 5C C6
+dbline 5D CC
+dbline 5E CE
+dbline 5F D0
+dbline 60 D2
+dbline 61 DA
+dbline FFFFFFFE DC
+dbline 0 DC
+dbfunc e lcd_wr_char E2 fV
+dbsym r temp 16 c
+dbsym r letter 14 c
+dbline FFFFFFFF E8
+dbline 66 E8
+dbline 68 E8
+dbline 69 EA
+dbline 6A EC
+dbline 6B F2
+dbline 6C F8
+dbline 6D FA
+dbline 6E FC
+dbline 6F FE
+dbline 70 106
+dbline 72 108
+dbline 73 10A
+dbline 74 112
+dbline 75 118
+dbline 76 11E
+dbline 77 120
+dbline 78 122
+dbline 79 124
+dbline 7A 12C
+dbline FFFFFFFE 12E
+dbline 0 12E
+dbfunc e lcd_home 134 fV
+dbline FFFFFFFF 134
+dbline 7F 134
+dbline 80 134
+dbline FFFFFFFE 138
+dbline 0 138
+dbfunc e lcd_string 13A fV
+dbsym r str 14 pc
+dbline FFFFFFFF 140
+dbline 86 140
+dbline 88 142
+dbline 89 142
+dbline 8A 148
+dbline 8B 14C
+dbline 87 14C
+dbline FFFFFFFE 154
+dbline 0 154
+dbfunc e lcd_cursor 15A fV
+dbsym r column 14 c
+dbsym r row A c
+dbline FFFFFFFF 162
+dbline 91 162
+dbline 92 162
+dbline 93 188
+dbline 93 190
+dbline 94 192
+dbline 94 19A
+dbline 95 19C
+dbline 95 1A4
+dbline 96 1A6
+dbline 96 1AE
+dbline 97 1AE
+dbline FFFFFFFE 1AE
+dbline 0 1AE
+dbfunc e lcd_print 1B2 fV
+dbsym r flag 16 c
+dbsym r digits 14 I
+dbsym r value A i
+dbsym r coloumn E c
+dbsym r row C c
+dbline FFFFFFFF 1C2
+dbline 9D 1C2
+dbline 9E 1C2
+dbline 9F 1C4
+dbline A0 1CC
+dbline A1 1CC
+dbline A2 1CE
+dbline A4 1D0
+dbline A5 1D0
+dbline A6 1D6
+dbline A7 1D6
+dbline A8 1E2
+dbline A9 1E2
+dbline AA 1F8
+dbline AB 1FC
+dbline AC 1FE
+dbline AD 1FE
+dbline AE 20A
+dbline AF 20A
+dbline B0 21C
+dbline B1 230
+dbline B2 234
+dbline B3 236
+dbline B4 236
+dbline B5 242
+dbline B6 242
+dbline B7 254
+dbline B8 268
+dbline B9 26C
+dbline BA 26E
+dbline BB 26E
+dbline BC 27A
+dbline BD 27A
+dbline BE 28C
+dbline BF 2A0
+dbline C0 2A4
+dbline C1 2A6
+dbline C2 2A6
+dbline C3 2B2
+dbline C4 2B2
+dbline C5 2C8
+dbline C6 2CC
+dbline C7 2CC
+dbline C8 2D6
+dbline C9 2D6
+dbline CA 2DA
+dbline FFFFFFFE 2DA
+dbline 0 2DA
+S _lcd_set_4bit Def0000
+S _lcd_wr_command Def0090
+S _lcd_print Def01B2
+S _lcd_string Def013A
+S _lcd_cursor Def015A
+S _lcd_home Def0134
+S _lcd_init Def0072
+S _lcd_wr_char Def00E2
+A bss size E flags 20
+dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\lcd.c
+dbsym e i 0 I
+dbsym e million 2 i
+dbsym e thousand 4 i
+dbsym e hundred 6 i
+dbsym e tens 8 i
+dbsym e unit A i
+dbsym e temp C i
+S _temp Def000C
+S _tens Def0008
+S _unit Def000A
+S _hundred Def0006
+S _million Def0002
+S _thousand Def0004
+S _i Def0000
+T 00 00 01 E0 10 E0 0E 94 00 00 40 98 41 98 80 E3
+R 00 00 00 00 12 08 04 00
+T 0E 00 88 B9 42 9A 05 E0 10 E0 0E 94 00 00 42 98
+R 00 00 00 00 12 0C 04 00
+T 1C 00 01 E0 10 E0 0E 94 00 00 40 98 41 98 80 E3
+R 00 00 00 00 12 08 04 00
+T 2A 00 88 B9 42 9A 05 E0 10 E0 0E 94 00 00 42 98
+R 00 00 00 00 12 0C 04 00
+T 38 00 01 E0 10 E0 0E 94 00 00 40 98 41 98 80 E3
+R 00 00 00 00 12 08 04 00
+T 46 00 88 B9 42 9A 05 E0 10 E0 0E 94 00 00 42 98
+R 00 00 00 00 12 0C 04 00
+T 54 00 01 E0 10 E0 0E 94 00 00 40 98 41 98 80 E2
+R 00 00 00 00 12 08 04 00
+T 62 00 88 B9 42 9A 05 E0 10 E0 0E 94 00 00 42 98
+R 00 00 00 00 12 0C 04 00
+T 70 00 08 95
+R 00 00 00 00
+T 72 00 01 E0 10 E0 0E 94 00 00 08 E2 09 D0 01 E0
+R 00 00 00 00 12 08 04 00
+T 80 00 07 D0 06 E0 05 D0 0E E0 03 D0 00 E8 01 D0
+R 00 00 00 00
+T 8E 00 08 95
+R 00 00 00 00
+T 90 00 4A 93 6A 93 40 2F 64 2F 60 7F 88 B1 8F 70
+R 00 00 00 00
+T 9E 00 88 B9 28 B0 26 2A 28 B8 40 98 41 98 42 9A
+R 00 00 00 00
+T AC 00 05 E0 10 E0 0E 94 00 00 42 98 4F 70 84 2F
+R 00 00 00 00 12 08 04 00
+T BA 00 8F 70 82 95 48 2F 88 B1 8F 70 88 B9 28 B0
+R 00 00 00 00
+T C8 00 24 2A 28 B8 40 98 41 98 42 9A 05 E0 10 E0
+R 00 00 00 00
+T D6 00 0E 94 00 00 42 98 69 91 49 91 08 95
+R 00 00 00 00 12 04 04 00
+T E2 00 4A 93 6A 93 40 2F 64 2F 60 7F 88 B1 8F 70
+R 00 00 00 00
+T F0 00 88 B9 28 B0 26 2A 28 B8 40 9A 41 98 42 9A
+R 00 00 00 00
+T FE 00 05 E0 10 E0 0E 94 00 00 42 98 4F 70 84 2F
+R 00 00 00 00 12 08 04 00
+T 0C 01 8F 70 82 95 48 2F 88 B1 8F 70 88 B9 28 B0
+R 00 00 00 00
+T 1A 01 24 2A 28 B8 40 9A 41 98 42 9A 05 E0 10 E0
+R 00 00 00 00
+T 28 01 0E 94 00 00 42 98 69 91 49 91 08 95
+R 00 00 00 00 12 04 04 00
+T 34 01 00 E8 AC DF 08 95
+R 00 00 00 00
+T 3A 01 4A 93 5A 93 A8 01 05 C0 FA 01 00 81 CD DF
+R 00 00 00 00
+T 48 01 4F 5F 5F 4F FA 01 20 80 22 20 B9 F7 59 91
+R 00 00 00 00
+T 56 01 49 91 08 95
+R 00 00 00 00
+T 5A 01 0E 94 00 00 42 2F A0 2E 6A 2D 77 27 61 30
+R 00 00 00 00 12 04 02 00
+T 68 01 E0 E0 7E 07 69 F0 62 30 E0 E0 7E 07 71 F0
+R 00 00 00 00
+T 76 01 63 30 E0 E0 7E 07 79 F0 64 30 E0 E0 7E 07
+R 00 00 00 00
+T 84 01 81 F0 13 C0 04 2F 00 58 01 50 80 DF 0E C0
+R 00 00 00 00
+T 92 01 04 2F 00 54 01 50 7B DF 09 C0 04 2F 0C 56
+R 00 00 00 00
+T A0 01 01 50 76 DF 04 C0 04 2F 0C 52 01 50 71 DF
+R 00 00 00 00
+T AE 01 0C 94 00 00
+R 00 00 00 00 12 04 05 00
+T B2 01 0E 94 00 00 E2 2E C0 2E AA 84 BB 84 4C 85
+R 00 00 00 00 12 04 03 00
+T C0 01 5D 85 66 27 CC 20 11 F0 EE 20 11 F4 B3 DF
+R 00 00 00 00
+T CE 01 03 C0 2E 2D 0C 2D C2 DF 45 30 E0 E0 5E 07
+R 00 00 00 00
+T DC 01 11 F0 61 30 71 F4 20 E1 37 E2 85 01
+R 00 00 00 00
+T E8 01 0E 94 00 00 C8 01 C0 96 90 93 03 00 80 93
+R 00 00 00 00 12 04 01 00 00 0C 01 00
+T F6 01 02 00 08 2F 73 DF 61 E0 44 30 E0 E0 5E 07
+R 00 00 00 00 00 02 01 00
+T 04 02 11 F0 61 30 B1 F4 28 EE 33 E0 85 01
+R 00 00 00 00
+T 10 02 0E 94 00 00 10 93 0D 00 00 93 0C 00 2A E0
+R 00 00 00 00 12 04 01 00 00 08 01 00 00 0C 01 00
+T 1E 02 30 E0 0E 94 00 00 C8 01 C0 96 90 93 05 00
+R 00 00 00 00 12 06 00 00 00 0E 01 00
+T 2C 02 80 93 04 00 08 2F 57 DF 61 E0 43 30 E0 E0
+R 00 00 00 00 00 04 01 00
+T 3A 02 5E 07 11 F0 61 30 B1 F4 24 E6 30 E0 85 01
+R 00 00 00 00
+T 48 02 0E 94 00 00 10 93 0D 00 00 93 0C 00 2A E0
+R 00 00 00 00 12 04 01 00 00 08 01 00 00 0C 01 00
+T 56 02 30 E0 0E 94 00 00 C8 01 C0 96 90 93 07 00
+R 00 00 00 00 12 06 00 00 00 0E 01 00
+T 64 02 80 93 06 00 08 2F 3B DF 61 E0 42 30 E0 E0
+R 00 00 00 00 00 04 01 00
+T 72 02 5E 07 11 F0 61 30 B1 F4 2A E0 30 E0 85 01
+R 00 00 00 00
+T 80 02 0E 94 00 00 10 93 0D 00 00 93 0C 00 2A E0
+R 00 00 00 00 12 04 01 00 00 08 01 00 00 0C 01 00
+T 8E 02 30 E0 0E 94 00 00 C8 01 C0 96 90 93 09 00
+R 00 00 00 00 12 06 00 00 00 0E 01 00
+T 9C 02 80 93 08 00 08 2F 1F DF 61 E0 41 30 E0 E0
+R 00 00 00 00 00 04 01 00
+T AA 02 5E 07 11 F0 61 30 69 F4 2A E0 30 E0 85 01
+R 00 00 00 00
+T B8 02 0E 94 00 00 C8 01 C0 96 90 93 0B 00 80 93
+R 00 00 00 00 12 04 00 00 00 0C 01 00
+T C6 02 0A 00 08 2F 0B DF 85 E0 90 E0 84 17 95 07
+R 00 00 00 00 00 02 01 00
+T D4 02 14 F4 05 E4 04 DF 0C 94 00 00
+R 00 00 00 00 12 0A 06 00

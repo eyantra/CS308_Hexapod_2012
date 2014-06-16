@@ -1,0 +1,822 @@
+                        .module lcd.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\lcd.c
+ 0000                   .dbfunc e lcd_set_4bit _lcd_set_4bit fV
+                        .even
+ 0000           _lcd_set_4bit::
+ 0000                   .dbline -1
+ 0000                   .dbline 23
+ 0000           ; #include <iom2560v.h>
+ 0000           ; #include "lcd.h"
+ 0000           ; #define FCPU 11059200ul
+ 0000           ; #define RS 0
+ 0000           ; #define RW 1
+ 0000           ; #define EN 2
+ 0000           ; #define lcd_port PORTC
+ 0000           ; 
+ 0000           ; #define sbit(reg,bit) reg |= (1<<bit)
+ 0000           ; #define cbit(reg,bit) reg &= ~(1<<bit)
+ 0000           ; 
+ 0000           ; unsigned int temp;
+ 0000           ; unsigned int unit;
+ 0000           ; unsigned int tens;
+ 0000           ; unsigned int hundred;
+ 0000           ; unsigned int thousand;
+ 0000           ; unsigned int million;
+ 0000           ; 
+ 0000           ; int i;
+ 0000           ; 
+ 0000           ; /*****Function to Reset LCD*****/
+ 0000           ; void lcd_set_4bit()
+ 0000           ; {
+ 0000                   .dbline 24
+ 0000           ;       delay(1);
+ 0000 01E0              ldi R16,1
+ 0002 10E0              ldi R17,0
+ 0004 0E940000          xcall _delay
+ 0008                   .dbline 26
+ 0008           ; 
+ 0008           ;       cbit(lcd_port,RS);                              //RS=0 --- Command Input
+ 0008 4098              cbi 0x8,0
+ 000A                   .dbline 27
+ 000A           ;       cbit(lcd_port,RW);                              //RW=0 --- Writing to LCD
+ 000A 4198              cbi 0x8,1
+ 000C                   .dbline 28
+ 000C           ;       lcd_port = 0x30;                                //Sending 3
+ 000C 80E3              ldi R24,48
+ 000E 88B9              out 0x8,R24
+ 0010                   .dbline 29
+ 0010           ;       sbit(lcd_port,EN);                              //Set Enable Pin
+ 0010 429A              sbi 0x8,2
+ 0012                   .dbline 30
+ 0012           ;       delay(5);                                       //Delay
+ 0012 05E0              ldi R16,5
+ 0014 10E0              ldi R17,0
+ 0016 0E940000          xcall _delay
+ 001A                   .dbline 31
+ 001A           ;       cbit(lcd_port,EN);                              //Clear Enable Pin
+ 001A 4298              cbi 0x8,2
+ 001C                   .dbline 33
+ 001C           ; 
+ 001C           ;       delay(1);
+ 001C 01E0              ldi R16,1
+ 001E 10E0              ldi R17,0
+ 0020 0E940000          xcall _delay
+ 0024                   .dbline 35
+ 0024           ; 
+ 0024           ;       cbit(lcd_port,RS);                              //RS=0 --- Command Input
+ 0024 4098              cbi 0x8,0
+ 0026                   .dbline 36
+ 0026           ;       cbit(lcd_port,RW);                              //RW=0 --- Writing to LCD
+ 0026 4198              cbi 0x8,1
+ 0028                   .dbline 37
+ 0028           ;       lcd_port = 0x30;                                //Sending 3
+ 0028 80E3              ldi R24,48
+ 002A 88B9              out 0x8,R24
+ 002C                   .dbline 38
+ 002C           ;       sbit(lcd_port,EN);                              //Set Enable Pin
+ 002C 429A              sbi 0x8,2
+ 002E                   .dbline 39
+ 002E           ;       delay(5);                                               //Delay
+ 002E 05E0              ldi R16,5
+ 0030 10E0              ldi R17,0
+ 0032 0E940000          xcall _delay
+ 0036                   .dbline 40
+ 0036           ;       cbit(lcd_port,EN);                              //Clear Enable Pin
+ 0036 4298              cbi 0x8,2
+ 0038                   .dbline 42
+ 0038           ; 
+ 0038           ;       delay(1);
+ 0038 01E0              ldi R16,1
+ 003A 10E0              ldi R17,0
+ 003C 0E940000          xcall _delay
+ 0040                   .dbline 44
+ 0040           ; 
+ 0040           ;       cbit(lcd_port,RS);                              //RS=0 --- Command Input
+ 0040 4098              cbi 0x8,0
+ 0042                   .dbline 45
+ 0042           ;       cbit(lcd_port,RW);                              //RW=0 --- Writing to LCD
+ 0042 4198              cbi 0x8,1
+ 0044                   .dbline 46
+ 0044           ;       lcd_port = 0x30;                                //Sending 3
+ 0044 80E3              ldi R24,48
+ 0046 88B9              out 0x8,R24
+ 0048                   .dbline 47
+ 0048           ;       sbit(lcd_port,EN);                              //Set Enable Pin
+ 0048 429A              sbi 0x8,2
+ 004A                   .dbline 48
+ 004A           ;       delay(5);                                       //Delay
+ 004A 05E0              ldi R16,5
+ 004C 10E0              ldi R17,0
+ 004E 0E940000          xcall _delay
+ 0052                   .dbline 49
+ 0052           ;       cbit(lcd_port,EN);                              //Clear Enable Pin
+ 0052 4298              cbi 0x8,2
+ 0054                   .dbline 51
+ 0054           ; 
+ 0054           ;       delay(1);
+ 0054 01E0              ldi R16,1
+ 0056 10E0              ldi R17,0
+ 0058 0E940000          xcall _delay
+ 005C                   .dbline 53
+ 005C           ; 
+ 005C           ;       cbit(lcd_port,RS);                              //RS=0 --- Command Input
+ 005C 4098              cbi 0x8,0
+ 005E                   .dbline 54
+ 005E           ;       cbit(lcd_port,RW);                              //RW=0 --- Writing to LCD
+ 005E 4198              cbi 0x8,1
+ 0060                   .dbline 55
+ 0060           ;       lcd_port = 0x20;                                //Sending 2 to initialise LCD 4-bit mode
+ 0060 80E2              ldi R24,32
+ 0062 88B9              out 0x8,R24
+ 0064                   .dbline 56
+ 0064           ;       sbit(lcd_port,EN);                              //Set Enable Pin
+ 0064 429A              sbi 0x8,2
+ 0066                   .dbline 57
+ 0066           ;       delay(5);                                       //Delay
+ 0066 05E0              ldi R16,5
+ 0068 10E0              ldi R17,0
+ 006A 0E940000          xcall _delay
+ 006E                   .dbline 58
+ 006E           ;       cbit(lcd_port,EN);                              //Clear Enable Pin
+ 006E 4298              cbi 0x8,2
+ 0070                   .dbline -2
+ 0070           L1:
+ 0070                   .dbline 0 ; func end
+ 0070 0895              ret
+ 0072                   .dbend
+ 0072                   .dbfunc e lcd_init _lcd_init fV
+                        .even
+ 0072           _lcd_init::
+ 0072                   .dbline -1
+ 0072                   .dbline 63
+ 0072           ; }
+ 0072           ; 
+ 0072           ; /*****Function to Initialize LCD*****/
+ 0072           ; void lcd_init()
+ 0072           ; {
+ 0072                   .dbline 64
+ 0072           ;       delay(1);
+ 0072 01E0              ldi R16,1
+ 0074 10E0              ldi R17,0
+ 0076 0E940000          xcall _delay
+ 007A                   .dbline 66
+ 007A           ; 
+ 007A           ;       lcd_wr_command(0x28);                   //LCD 4-bit mode and 2 lines.
+ 007A 08E2              ldi R16,40
+ 007C 09D0              xcall _lcd_wr_command
+ 007E                   .dbline 67
+ 007E           ;       lcd_wr_command(0x01);
+ 007E 01E0              ldi R16,1
+ 0080 07D0              xcall _lcd_wr_command
+ 0082                   .dbline 68
+ 0082           ;       lcd_wr_command(0x06);
+ 0082 06E0              ldi R16,6
+ 0084 05D0              xcall _lcd_wr_command
+ 0086                   .dbline 69
+ 0086           ;       lcd_wr_command(0x0E);
+ 0086 0EE0              ldi R16,14
+ 0088 03D0              xcall _lcd_wr_command
+ 008A                   .dbline 70
+ 008A           ;       lcd_wr_command(0x80);
+ 008A 00E8              ldi R16,128
+ 008C 01D0              xcall _lcd_wr_command
+ 008E                   .dbline -2
+ 008E           L2:
+ 008E                   .dbline 0 ; func end
+ 008E 0895              ret
+ 0090                   .dbend
+ 0090                   .dbfunc e lcd_wr_command _lcd_wr_command fV
+ 0090           ;           temp -> R22
+ 0090           ;            cmd -> R20
+                        .even
+ 0090           _lcd_wr_command::
+ 0090 4A93              st -y,R20
+ 0092 6A93              st -y,R22
+ 0094 402F              mov R20,R16
+ 0096                   .dbline -1
+ 0096                   .dbline 77
+ 0096           ;               
+ 0096           ; }
+ 0096           ; 
+ 0096           ;        
+ 0096           ; /*****Function to Write Command on LCD*****/
+ 0096           ; void lcd_wr_command(unsigned char cmd)
+ 0096           ; {
+ 0096                   .dbline 79
+ 0096           ;       unsigned char temp;
+ 0096           ;       temp = cmd;
+ 0096 642F              mov R22,R20
+ 0098                   .dbline 80
+ 0098           ;       temp = temp & 0xF0;
+ 0098 607F              andi R22,240
+ 009A                   .dbline 81
+ 009A           ;       lcd_port &= 0x0F;
+ 009A 88B1              in R24,0x8
+ 009C 8F70              andi R24,15
+ 009E 88B9              out 0x8,R24
+ 00A0                   .dbline 82
+ 00A0           ;       lcd_port |= temp;
+ 00A0 28B0              in R2,0x8
+ 00A2 262A              or R2,R22
+ 00A4 28B8              out 0x8,R2
+ 00A6                   .dbline 83
+ 00A6           ;       cbit(lcd_port,RS);
+ 00A6 4098              cbi 0x8,0
+ 00A8                   .dbline 84
+ 00A8           ;       cbit(lcd_port,RW);
+ 00A8 4198              cbi 0x8,1
+ 00AA                   .dbline 85
+ 00AA           ;       sbit(lcd_port,EN);
+ 00AA 429A              sbi 0x8,2
+ 00AC                   .dbline 86
+ 00AC           ;       delay(5);
+ 00AC 05E0              ldi R16,5
+ 00AE 10E0              ldi R17,0
+ 00B0 0E940000          xcall _delay
+ 00B4                   .dbline 87
+ 00B4           ;       cbit(lcd_port,EN);
+ 00B4 4298              cbi 0x8,2
+ 00B6                   .dbline 89
+ 00B6           ;       
+ 00B6           ;       cmd = cmd & 0x0F;
+ 00B6 4F70              andi R20,15
+ 00B8                   .dbline 90
+ 00B8           ;       cmd = cmd<<4;
+ 00B8 842F              mov R24,R20
+ 00BA 8F70              andi R24,#0x0F
+ 00BC 8295              swap R24
+ 00BE 482F              mov R20,R24
+ 00C0                   .dbline 91
+ 00C0           ;       lcd_port &= 0x0F;
+ 00C0 88B1              in R24,0x8
+ 00C2 8F70              andi R24,15
+ 00C4 88B9              out 0x8,R24
+ 00C6                   .dbline 92
+ 00C6           ;       lcd_port |= cmd;
+ 00C6 28B0              in R2,0x8
+ 00C8 242A              or R2,R20
+ 00CA 28B8              out 0x8,R2
+ 00CC                   .dbline 93
+ 00CC           ;       cbit(lcd_port,RS);
+ 00CC 4098              cbi 0x8,0
+ 00CE                   .dbline 94
+ 00CE           ;       cbit(lcd_port,RW);
+ 00CE 4198              cbi 0x8,1
+ 00D0                   .dbline 95
+ 00D0           ;       sbit(lcd_port,EN);
+ 00D0 429A              sbi 0x8,2
+ 00D2                   .dbline 96
+ 00D2           ;       delay(5);
+ 00D2 05E0              ldi R16,5
+ 00D4 10E0              ldi R17,0
+ 00D6 0E940000          xcall _delay
+ 00DA                   .dbline 97
+ 00DA           ;       cbit(lcd_port,EN);
+ 00DA 4298              cbi 0x8,2
+ 00DC                   .dbline -2
+ 00DC           L3:
+ 00DC                   .dbline 0 ; func end
+ 00DC 6991              ld R22,y+
+ 00DE 4991              ld R20,y+
+ 00E0 0895              ret
+ 00E2                   .dbsym r temp 22 c
+ 00E2                   .dbsym r cmd 20 c
+ 00E2                   .dbend
+ 00E2                   .dbfunc e lcd_wr_char _lcd_wr_char fV
+ 00E2           ;           temp -> R22
+ 00E2           ;         letter -> R20
+                        .even
+ 00E2           _lcd_wr_char::
+ 00E2 4A93              st -y,R20
+ 00E4 6A93              st -y,R22
+ 00E6 402F              mov R20,R16
+ 00E8                   .dbline -1
+ 00E8                   .dbline 102
+ 00E8           ; }
+ 00E8           ; 
+ 00E8           ; /*****Function to Write Data on LCD*****/
+ 00E8           ; void lcd_wr_char(char letter)
+ 00E8           ; {
+ 00E8                   .dbline 104
+ 00E8           ;       char temp;
+ 00E8           ;       temp = letter;
+ 00E8 642F              mov R22,R20
+ 00EA                   .dbline 105
+ 00EA           ;       temp = (temp & 0xF0);
+ 00EA 607F              andi R22,240
+ 00EC                   .dbline 106
+ 00EC           ;       lcd_port &= 0x0F;
+ 00EC 88B1              in R24,0x8
+ 00EE 8F70              andi R24,15
+ 00F0 88B9              out 0x8,R24
+ 00F2                   .dbline 107
+ 00F2           ;       lcd_port |= temp;
+ 00F2 28B0              in R2,0x8
+ 00F4 262A              or R2,R22
+ 00F6 28B8              out 0x8,R2
+ 00F8                   .dbline 108
+ 00F8           ;       sbit(lcd_port,RS);
+ 00F8 409A              sbi 0x8,0
+ 00FA                   .dbline 109
+ 00FA           ;       cbit(lcd_port,RW);
+ 00FA 4198              cbi 0x8,1
+ 00FC                   .dbline 110
+ 00FC           ;       sbit(lcd_port,EN);
+ 00FC 429A              sbi 0x8,2
+ 00FE                   .dbline 111
+ 00FE           ;       delay(5);
+ 00FE 05E0              ldi R16,5
+ 0100 10E0              ldi R17,0
+ 0102 0E940000          xcall _delay
+ 0106                   .dbline 112
+ 0106           ;       cbit(lcd_port,EN);
+ 0106 4298              cbi 0x8,2
+ 0108                   .dbline 114
+ 0108           ; 
+ 0108           ;       letter = letter & 0x0F;
+ 0108 4F70              andi R20,15
+ 010A                   .dbline 115
+ 010A           ;       letter = letter<<4;
+ 010A 842F              mov R24,R20
+ 010C 8F70              andi R24,#0x0F
+ 010E 8295              swap R24
+ 0110 482F              mov R20,R24
+ 0112                   .dbline 116
+ 0112           ;       lcd_port &= 0x0F;
+ 0112 88B1              in R24,0x8
+ 0114 8F70              andi R24,15
+ 0116 88B9              out 0x8,R24
+ 0118                   .dbline 117
+ 0118           ;       lcd_port |= letter;
+ 0118 28B0              in R2,0x8
+ 011A 242A              or R2,R20
+ 011C 28B8              out 0x8,R2
+ 011E                   .dbline 118
+ 011E           ;       sbit(lcd_port,RS);
+ 011E 409A              sbi 0x8,0
+ 0120                   .dbline 119
+ 0120           ;       cbit(lcd_port,RW);
+ 0120 4198              cbi 0x8,1
+ 0122                   .dbline 120
+ 0122           ;       sbit(lcd_port,EN);
+ 0122 429A              sbi 0x8,2
+ 0124                   .dbline 121
+ 0124           ;       delay(5);
+ 0124 05E0              ldi R16,5
+ 0126 10E0              ldi R17,0
+ 0128 0E940000          xcall _delay
+ 012C                   .dbline 122
+ 012C           ;       cbit(lcd_port,EN);
+ 012C 4298              cbi 0x8,2
+ 012E                   .dbline -2
+ 012E           L4:
+ 012E                   .dbline 0 ; func end
+ 012E 6991              ld R22,y+
+ 0130 4991              ld R20,y+
+ 0132 0895              ret
+ 0134                   .dbsym r temp 22 c
+ 0134                   .dbsym r letter 20 c
+ 0134                   .dbend
+ 0134                   .dbfunc e lcd_home _lcd_home fV
+                        .even
+ 0134           _lcd_home::
+ 0134                   .dbline -1
+ 0134                   .dbline 127
+ 0134           ; }
+ 0134           ; 
+ 0134           ; 
+ 0134           ; void lcd_home()
+ 0134           ; {
+ 0134                   .dbline 128
+ 0134           ;       lcd_wr_command(0x80);
+ 0134 00E8              ldi R16,128
+ 0136 ACDF              xcall _lcd_wr_command
+ 0138                   .dbline -2
+ 0138           L5:
+ 0138                   .dbline 0 ; func end
+ 0138 0895              ret
+ 013A                   .dbend
+ 013A                   .dbfunc e lcd_string _lcd_string fV
+ 013A           ;            str -> R20,R21
+                        .even
+ 013A           _lcd_string::
+ 013A 4A93              st -y,R20
+ 013C 5A93              st -y,R21
+ 013E A801              movw R20,R16
+ 0140                   .dbline -1
+ 0140                   .dbline 134
+ 0140           ; }
+ 0140           ; 
+ 0140           ; 
+ 0140           ; /*****Function to Print String on LCD*****/
+ 0140           ; void lcd_string(char *str)
+ 0140           ; {
+ 0140 05C0              xjmp L8
+ 0142           L7:
+ 0142                   .dbline 136
+ 0142           ;       while(*str != '\0')
+ 0142           ;       {
+ 0142                   .dbline 137
+ 0142           ;               lcd_wr_char(*str);
+ 0142 FA01              movw R30,R20
+ 0144 0081              ldd R16,z+0
+ 0146 CDDF              xcall _lcd_wr_char
+ 0148                   .dbline 138
+ 0148           ;               str++;
+ 0148 4F5F              subi R20,255  ; offset = 1
+ 014A 5F4F              sbci R21,255
+ 014C                   .dbline 139
+ 014C           ;       }
+ 014C           L8:
+ 014C                   .dbline 135
+ 014C FA01              movw R30,R20
+ 014E 2080              ldd R2,z+0
+ 0150 2220              tst R2
+ 0152 B9F7              brne L7
+ 0154           X0:
+ 0154                   .dbline -2
+ 0154           L6:
+ 0154                   .dbline 0 ; func end
+ 0154 5991              ld R21,y+
+ 0156 4991              ld R20,y+
+ 0158 0895              ret
+ 015A                   .dbsym r str 20 pc
+ 015A                   .dbend
+ 015A                   .dbfunc e lcd_cursor _lcd_cursor fV
+ 015A           ;         column -> R20
+ 015A           ;            row -> R10
+                        .even
+ 015A           _lcd_cursor::
+ 015A 0E940000          xcall push_xgsetF00C
+ 015E 422F              mov R20,R18
+ 0160 A02E              mov R10,R16
+ 0162                   .dbline -1
+ 0162                   .dbline 145
+ 0162           ; }
+ 0162           ; 
+ 0162           ; /*** Position the LCD cursor at "row", "column". ***/
+ 0162           ; 
+ 0162           ; void lcd_cursor (char row, char column)
+ 0162           ; {
+ 0162                   .dbline 146
+ 0162           ;       switch (row) {
+ 0162 6A2D              mov R22,R10
+ 0164 7727              clr R23
+ 0166 6130              cpi R22,1
+ 0168 E0E0              ldi R30,0
+ 016A 7E07              cpc R23,R30
+ 016C 69F0              breq L14
+ 016E           X1:
+ 016E 6230              cpi R22,2
+ 0170 E0E0              ldi R30,0
+ 0172 7E07              cpc R23,R30
+ 0174 71F0              breq L15
+ 0176           X2:
+ 0176 6330              cpi R22,3
+ 0178 E0E0              ldi R30,0
+ 017A 7E07              cpc R23,R30
+ 017C 79F0              breq L16
+ 017E           X3:
+ 017E 6430              cpi R22,4
+ 0180 E0E0              ldi R30,0
+ 0182 7E07              cpc R23,R30
+ 0184 81F0              breq L17
+ 0186           X4:
+ 0186 13C0              xjmp L12
+ 0188           L14:
+ 0188                   .dbline 147
+ 0188           ;               case 1: lcd_wr_command (0x80 + column - 1); break;
+ 0188 042F              mov R16,R20
+ 018A 0058              subi R16,128    ; addi 128
+ 018C 0150              subi R16,1
+ 018E 80DF              xcall _lcd_wr_command
+ 0190                   .dbline 147
+ 0190 0EC0              xjmp L12
+ 0192           L15:
+ 0192                   .dbline 148
+ 0192           ;               case 2: lcd_wr_command (0xc0 + column - 1); break;
+ 0192 042F              mov R16,R20
+ 0194 0054              subi R16,64    ; addi 192
+ 0196 0150              subi R16,1
+ 0198 7BDF              xcall _lcd_wr_command
+ 019A                   .dbline 148
+ 019A 09C0              xjmp L12
+ 019C           L16:
+ 019C                   .dbline 149
+ 019C           ;               case 3: lcd_wr_command (0x94 + column - 1); break;
+ 019C 042F              mov R16,R20
+ 019E 0C56              subi R16,108    ; addi 148
+ 01A0 0150              subi R16,1
+ 01A2 76DF              xcall _lcd_wr_command
+ 01A4                   .dbline 149
+ 01A4 04C0              xjmp L12
+ 01A6           L17:
+ 01A6                   .dbline 150
+ 01A6           ;               case 4: lcd_wr_command (0xd4 + column - 1); break;
+ 01A6 042F              mov R16,R20
+ 01A8 0C52              subi R16,44    ; addi 212
+ 01AA 0150              subi R16,1
+ 01AC 71DF              xcall _lcd_wr_command
+ 01AE                   .dbline 150
+ 01AE                   .dbline 151
+ 01AE           ;               default: break;
+ 01AE           L12:
+ 01AE                   .dbline -2
+ 01AE           L10:
+ 01AE                   .dbline 0 ; func end
+ 01AE 0C940000          xjmp pop_xgsetF00C
+ 01B2                   .dbsym r column 20 c
+ 01B2                   .dbsym r row 10 c
+ 01B2                   .dbend
+ 01B2                   .dbfunc e lcd_print _lcd_print fV
+ 01B2           ;           flag -> R22
+ 01B2           ;         digits -> R20,R21
+ 01B2           ;          value -> R10,R11
+ 01B2           ;        coloumn -> R14
+ 01B2           ;            row -> R12
+                        .even
+ 01B2           _lcd_print::
+ 01B2 0E940000          xcall push_xgsetF0FC
+ 01B6 E22E              mov R14,R18
+ 01B8 C02E              mov R12,R16
+ 01BA AA84              ldd R10,y+10
+ 01BC BB84              ldd R11,y+11
+ 01BE 4C85              ldd R20,y+12
+ 01C0 5D85              ldd R21,y+13
+ 01C2                   .dbline -1
+ 01C2                   .dbline 157
+ 01C2           ;       }
+ 01C2           ; }
+ 01C2           ; 
+ 01C2           ; /***** Function To Print Any input value upto the desired digit on LCD *****/
+ 01C2           ; void lcd_print (char row, char coloumn, unsigned int value, int digits)
+ 01C2           ; {
+ 01C2                   .dbline 158
+ 01C2           ;       unsigned char flag=0;
+ 01C2 6627              clr R22
+ 01C4                   .dbline 159
+ 01C4           ;       if(row==0||coloumn==0)
+ 01C4 CC20              tst R12
+ 01C6 11F0              breq L21
+ 01C8           X5:
+ 01C8 EE20              tst R14
+ 01CA 11F4              brne L19
+ 01CC           X6:
+ 01CC           L21:
+ 01CC                   .dbline 160
+ 01CC           ;       {
+ 01CC                   .dbline 161
+ 01CC           ;               lcd_home();
+ 01CC B3DF              xcall _lcd_home
+ 01CE                   .dbline 162
+ 01CE           ;       }
+ 01CE 03C0              xjmp L20
+ 01D0           L19:
+ 01D0                   .dbline 164
+ 01D0           ;       else
+ 01D0           ;       {
+ 01D0                   .dbline 165
+ 01D0           ;               lcd_cursor(row,coloumn);
+ 01D0 2E2D              mov R18,R14
+ 01D2 0C2D              mov R16,R12
+ 01D4 C2DF              xcall _lcd_cursor
+ 01D6                   .dbline 166
+ 01D6           ;       }
+ 01D6           L20:
+ 01D6                   .dbline 167
+ 01D6           ;       if(digits==5 || flag==1)
+ 01D6 4530              cpi R20,5
+ 01D8 E0E0              ldi R30,0
+ 01DA 5E07              cpc R21,R30
+ 01DC 11F0              breq L24
+ 01DE           X7:
+ 01DE 6130              cpi R22,1
+ 01E0 71F4              brne L22
+ 01E2           X8:
+ 01E2           L24:
+ 01E2                   .dbline 168
+ 01E2           ;       {
+ 01E2                   .dbline 169
+ 01E2           ;               million=value/10000+48;
+ 01E2 20E1              ldi R18,10000
+ 01E4 37E2              ldi R19,39
+ 01E6 8501              movw R16,R10
+ 01E8 0E940000          xcall div16u
+ 01EC C801              movw R24,R16
+ 01EE C096              adiw R24,48
+ 01F0 90930300          sts _million+1,R25
+ 01F4 80930200          sts _million,R24
+ 01F8                   .dbline 170
+ 01F8           ;               lcd_wr_char(million);
+ 01F8 082F              mov R16,R24
+ 01FA 73DF              xcall _lcd_wr_char
+ 01FC                   .dbline 171
+ 01FC           ;               flag=1;
+ 01FC 61E0              ldi R22,1
+ 01FE                   .dbline 172
+ 01FE           ;       }
+ 01FE           L22:
+ 01FE                   .dbline 173
+ 01FE           ;       if(digits==4 || flag==1)
+ 01FE 4430              cpi R20,4
+ 0200 E0E0              ldi R30,0
+ 0202 5E07              cpc R21,R30
+ 0204 11F0              breq L27
+ 0206           X9:
+ 0206 6130              cpi R22,1
+ 0208 B1F4              brne L25
+ 020A           X10:
+ 020A           L27:
+ 020A                   .dbline 174
+ 020A           ;       {
+ 020A                   .dbline 175
+ 020A           ;               temp = value/1000;
+ 020A 28EE              ldi R18,1000
+ 020C 33E0              ldi R19,3
+ 020E 8501              movw R16,R10
+ 0210 0E940000          xcall div16u
+ 0214 10930D00          sts _temp+1,R17
+ 0218 00930C00          sts _temp,R16
+ 021C                   .dbline 176
+ 021C           ;               thousand = temp%10 + 48;
+ 021C 2AE0              ldi R18,10
+ 021E 30E0              ldi R19,0
+ 0220 0E940000          xcall mod16u
+ 0224 C801              movw R24,R16
+ 0226 C096              adiw R24,48
+ 0228 90930500          sts _thousand+1,R25
+ 022C 80930400          sts _thousand,R24
+ 0230                   .dbline 177
+ 0230           ;               lcd_wr_char(thousand);
+ 0230 082F              mov R16,R24
+ 0232 57DF              xcall _lcd_wr_char
+ 0234                   .dbline 178
+ 0234           ;               flag=1;
+ 0234 61E0              ldi R22,1
+ 0236                   .dbline 179
+ 0236           ;       }
+ 0236           L25:
+ 0236                   .dbline 180
+ 0236           ;       if(digits==3 || flag==1)
+ 0236 4330              cpi R20,3
+ 0238 E0E0              ldi R30,0
+ 023A 5E07              cpc R21,R30
+ 023C 11F0              breq L30
+ 023E           X11:
+ 023E 6130              cpi R22,1
+ 0240 B1F4              brne L28
+ 0242           X12:
+ 0242           L30:
+ 0242                   .dbline 181
+ 0242           ;       {
+ 0242                   .dbline 182
+ 0242           ;               temp = value/100;
+ 0242 24E6              ldi R18,100
+ 0244 30E0              ldi R19,0
+ 0246 8501              movw R16,R10
+ 0248 0E940000          xcall div16u
+ 024C 10930D00          sts _temp+1,R17
+ 0250 00930C00          sts _temp,R16
+ 0254                   .dbline 183
+ 0254           ;               hundred = temp%10 + 48;
+ 0254 2AE0              ldi R18,10
+ 0256 30E0              ldi R19,0
+ 0258 0E940000          xcall mod16u
+ 025C C801              movw R24,R16
+ 025E C096              adiw R24,48
+ 0260 90930700          sts _hundred+1,R25
+ 0264 80930600          sts _hundred,R24
+ 0268                   .dbline 184
+ 0268           ;               lcd_wr_char(hundred);
+ 0268 082F              mov R16,R24
+ 026A 3BDF              xcall _lcd_wr_char
+ 026C                   .dbline 185
+ 026C           ;               flag=1;
+ 026C 61E0              ldi R22,1
+ 026E                   .dbline 186
+ 026E           ;       }
+ 026E           L28:
+ 026E                   .dbline 187
+ 026E           ;       if(digits==2 || flag==1)
+ 026E 4230              cpi R20,2
+ 0270 E0E0              ldi R30,0
+ 0272 5E07              cpc R21,R30
+ 0274 11F0              breq L33
+ 0276           X13:
+ 0276 6130              cpi R22,1
+ 0278 B1F4              brne L31
+ 027A           X14:
+ 027A           L33:
+ 027A                   .dbline 188
+ 027A           ;       {
+ 027A                   .dbline 189
+ 027A           ;               temp = value/10;
+ 027A 2AE0              ldi R18,10
+ 027C 30E0              ldi R19,0
+ 027E 8501              movw R16,R10
+ 0280 0E940000          xcall div16u
+ 0284 10930D00          sts _temp+1,R17
+ 0288 00930C00          sts _temp,R16
+ 028C                   .dbline 190
+ 028C           ;               tens = temp%10 + 48;
+ 028C 2AE0              ldi R18,10
+ 028E 30E0              ldi R19,0
+ 0290 0E940000          xcall mod16u
+ 0294 C801              movw R24,R16
+ 0296 C096              adiw R24,48
+ 0298 90930900          sts _tens+1,R25
+ 029C 80930800          sts _tens,R24
+ 02A0                   .dbline 191
+ 02A0           ;               lcd_wr_char(tens);
+ 02A0 082F              mov R16,R24
+ 02A2 1FDF              xcall _lcd_wr_char
+ 02A4                   .dbline 192
+ 02A4           ;               flag=1;
+ 02A4 61E0              ldi R22,1
+ 02A6                   .dbline 193
+ 02A6           ;       }
+ 02A6           L31:
+ 02A6                   .dbline 194
+ 02A6           ;       if(digits==1 || flag==1)
+ 02A6 4130              cpi R20,1
+ 02A8 E0E0              ldi R30,0
+ 02AA 5E07              cpc R21,R30
+ 02AC 11F0              breq L36
+ 02AE           X15:
+ 02AE 6130              cpi R22,1
+ 02B0 69F4              brne L34
+ 02B2           X16:
+ 02B2           L36:
+ 02B2                   .dbline 195
+ 02B2           ;       {
+ 02B2                   .dbline 196
+ 02B2           ;               unit = value%10 + 48;
+ 02B2 2AE0              ldi R18,10
+ 02B4 30E0              ldi R19,0
+ 02B6 8501              movw R16,R10
+ 02B8 0E940000          xcall mod16u
+ 02BC C801              movw R24,R16
+ 02BE C096              adiw R24,48
+ 02C0 90930B00          sts _unit+1,R25
+ 02C4 80930A00          sts _unit,R24
+ 02C8                   .dbline 197
+ 02C8           ;               lcd_wr_char(unit);
+ 02C8 082F              mov R16,R24
+ 02CA 0BDF              xcall _lcd_wr_char
+ 02CC                   .dbline 198
+ 02CC           ;       }
+ 02CC           L34:
+ 02CC                   .dbline 199
+ 02CC           ;       if(digits>5)
+ 02CC 85E0              ldi R24,5
+ 02CE 90E0              ldi R25,0
+ 02D0 8417              cp R24,R20
+ 02D2 9507              cpc R25,R21
+ 02D4 14F4              brge L37
+ 02D6           X17:
+ 02D6                   .dbline 200
+ 02D6           ;       {
+ 02D6                   .dbline 201
+ 02D6           ;               lcd_wr_char('E');
+ 02D6 05E4              ldi R16,69
+ 02D8 04DF              xcall _lcd_wr_char
+ 02DA                   .dbline 202
+ 02DA           ;       }
+ 02DA           L37:
+ 02DA                   .dbline -2
+ 02DA           L18:
+ 02DA                   .dbline 0 ; func end
+ 02DA 0C940000          xjmp pop_xgsetF0FC
+ 02DE                   .dbsym r flag 22 c
+ 02DE                   .dbsym r digits 20 I
+ 02DE                   .dbsym r value 10 i
+ 02DE                   .dbsym r coloumn 14 c
+ 02DE                   .dbsym r row 12 c
+ 02DE                   .dbend
+                        .area bss(ram, con, rel)
+ 0000                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\lcd.c
+ 0000           _i::
+ 0000                   .blkb 2
+ 0002                   .dbsym e i _i I
+ 0002           _million::
+ 0002                   .blkb 2
+ 0004                   .dbsym e million _million i
+ 0004           _thousand::
+ 0004                   .blkb 2
+ 0006                   .dbsym e thousand _thousand i
+ 0006           _hundred::
+ 0006                   .blkb 2
+ 0008                   .dbsym e hundred _hundred i
+ 0008           _tens::
+ 0008                   .blkb 2
+ 000A                   .dbsym e tens _tens i
+ 000A           _unit::
+ 000A                   .blkb 2
+ 000C                   .dbsym e unit _unit i
+ 000C           _temp::
+ 000C                   .blkb 2
+ 000E                   .dbsym e temp _temp i
+ 000E           ;       
+ 000E           ; }
+ 000E           ;               

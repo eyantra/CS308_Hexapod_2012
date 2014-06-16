@@ -1,0 +1,1181 @@
+                        .module hexapod_basic.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+                        .area data(ram, con, rel)
+ 0000                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+ 0000           _dirMirror:
+ 0000                   .blkb 1
+                        .area idata
+ 0000 00                .byte 0
+                        .area data(ram, con, rel)
+ 0001                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+ 0001                   .dbsym s dirMirror _dirMirror c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+ 0000                   .dbfunc e initializeAngles _initializeAngles fV
+ 0000           ;              i -> R20,R21
+ 0000           ;              j -> R22,R23
+                        .even
+ 0000           _initializeAngles::
+ 0000 0E940000          xcall push_xgsetF000
+ 0004                   .dbline -1
+ 0004                   .dbline 63
+ 0004           ; /***
+ 0004           ; Author : Srijit Dutt
+ 0004           ; Date Sun 07 Nov 2010 02:42:38 PM IST 
+ 0004           ; 
+ 0004           ; hexapod_basic.c : File contains various basic motion functions for the hexapod
+ 0004           ; Please include hexapod_basic.h file to call function from this file
+ 0004           ; 
+ 0004           ; */
+ 0004           ; 
+ 0004           ; /********************************************************************************
+ 0004           ; 
+ 0004           ;    Copyright (c) 2010, ERTS Lab IIT Bombay erts@cse.iitb.ac.in               -*- c -*-
+ 0004           ;    All rights reserved.
+ 0004           ; 
+ 0004           ;    Redistribution and use in source and binary forms, with or without
+ 0004           ;    modification, are permitted provided that the following conditions are met:
+ 0004           ; 
+ 0004           ;    * Redistributions of source code must retain the above copyright
+ 0004           ;      notice, this list of conditions and the following disclaimer.
+ 0004           ; 
+ 0004           ;    * Redistributions in binary form must reproduce the above copyright
+ 0004           ;      notice, this list of conditions and the following disclaimer in
+ 0004           ;      the documentation and/or other materials provided with the
+ 0004           ;      distribution.
+ 0004           ; 
+ 0004           ;    * Neither the name of the copyright holders nor the names of
+ 0004           ;      contributors may be used to endorse or promote products derived
+ 0004           ;      from this software without specific prior written permission.
+ 0004           ; 
+ 0004           ;    * Source code can be used for academic purpose. 
+ 0004           ;        For commercial use permission form the author needs to be taken.
+ 0004           ; 
+ 0004           ;   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ 0004           ;   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ 0004           ;   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ 0004           ;   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ 0004           ;   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ 0004           ;   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ 0004           ;   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ 0004           ;   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ 0004           ;   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ 0004           ;   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ 0004           ;   POSSIBILITY OF SUCH DAMAGE. 
+ 0004           ; 
+ 0004           ;   Software released under Creative Commence cc by-nc-sa licence.
+ 0004           ;   For legal information refer to: 
+ 0004           ;   http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode
+ 0004           ; 
+ 0004           ; ********************************************************************************/
+ 0004           ; 
+ 0004           ; 
+ 0004           ; #include "hexapod_macro.h"
+ 0004           ; #include "hexapod.h"
+ 0004           ; 
+ 0004           ; 
+ 0004           ; 
+ 0004           ; unsigned char angleArr[6][3];//!< The angle of the servos
+ 0004           ; static unsigned char dirMirror = DIR_MIRROR_LEG_1_2;
+ 0004           ; 
+ 0004           ; /**
+ 0004           ; Initialize the servo angles
+ 0004           ; */
+ 0004           ; void initializeAngles() {
+ 0004                   .dbline 66
+ 0004           ;        int i,j;
+ 0004           ;        
+ 0004           ;        for (i=0; i < NO_OF_LEGS; i++) {
+ 0004 4427              clr R20
+ 0006 5527              clr R21
+ 0008           L2:
+ 0008                   .dbline 66
+ 0008                   .dbline 67
+ 0008           ;                for(j=0; j < NO_OF_SERVOS_IN_EACH_LEG; j++) {
+ 0008 6627              clr R22
+ 000A 7727              clr R23
+ 000C           L6:
+ 000C                   .dbline 67
+ 000C                   .dbline 68
+ 000C           ;                                 angleArr[i][j] = INITIAL_ANGLE;
+ 000C 03E0              ldi R16,3
+ 000E 10E0              ldi R17,0
+ 0010 9A01              movw R18,R20
+ 0012 0E940000          xcall empy16s
+ 0016 1801              movw R2,R16
+ 0018 80E0              ldi R24,<_angleArr
+ 001A 90E0              ldi R25,>_angleArr
+ 001C 280E              add R2,R24
+ 001E 391E              adc R3,R25
+ 0020 FB01              movw R30,R22
+ 0022 E20D              add R30,R2
+ 0024 F31D              adc R31,R3
+ 0026 8AE5              ldi R24,90
+ 0028 8083              std z+0,R24
+ 002A                   .dbline 69
+ 002A           ;                }
+ 002A           L7:
+ 002A                   .dbline 67
+ 002A 6F5F              subi R22,255  ; offset = 1
+ 002C 7F4F              sbci R23,255
+ 002E                   .dbline 67
+ 002E 6330              cpi R22,3
+ 0030 E0E0              ldi R30,0
+ 0032 7E07              cpc R23,R30
+ 0034 5CF3              brlt L6
+ 0036           X0:
+ 0036                   .dbline 70
+ 0036           ;        }
+ 0036           L3:
+ 0036                   .dbline 66
+ 0036 4F5F              subi R20,255  ; offset = 1
+ 0038 5F4F              sbci R21,255
+ 003A                   .dbline 66
+ 003A 4630              cpi R20,6
+ 003C E0E0              ldi R30,0
+ 003E 5E07              cpc R21,R30
+ 0040 1CF3              brlt L2
+ 0042           X1:
+ 0042                   .dbline -2
+ 0042           L1:
+ 0042                   .dbline 0 ; func end
+ 0042 0C940000          xjmp pop_xgsetF000
+ 0046                   .dbsym r i 20 I
+ 0046                   .dbsym r j 22 I
+ 0046                   .dbend
+ 0046                   .dbfunc e angle _angle fV
+ 0046           ;          angle -> R10
+ 0046           ;          motor -> R20
+ 0046           ;            arm -> R12
+                        .even
+ 0046           _angle::
+ 0046 0E940000          xcall push_xgsetF03C
+ 004A 422F              mov R20,R18
+ 004C C02E              mov R12,R16
+ 004E 2197              sbiw R28,1
+ 0050 A984              ldd R10,y+9
+ 0052                   .dbline -1
+ 0052                   .dbline 90
+ 0052           ; }
+ 0052           ; 
+ 0052           ; /**
+ 0052           ; * Set the servo angle
+ 0052           ; */
+ 0052           ; void setAngle(unsigned char arm, unsigned char motor, unsigned char angle);
+ 0052           ; 
+ 0052           ; /**
+ 0052           ; Get the servo angle
+ 0052           ; */
+ 0052           ; unsigned char getAngle(unsigned char arm, unsigned char motor);
+ 0052           ; 
+ 0052           ; /**
+ 0052           ; Sets a specific servo to a angle
+ 0052           ; 
+ 0052           ; @param arm : The arm of the hexapod
+ 0052           ; @param motor :  The motor of the hexapod
+ 0052           ; @param angle : The angle to set the servo to
+ 0052           ; */
+ 0052           ; void angle(unsigned char arm, unsigned char motor, unsigned char angle) {
+ 0052                   .dbline 91
+ 0052           ;       setAngle(arm, motor, angle); 
+ 0052 A882              std y+0,R10
+ 0054 242F              mov R18,R20
+ 0056 0C2D              mov R16,R12
+ 0058 0ED1              xcall _setAngle
+ 005A                   .dbline 92
+ 005A           ;       switch (arm) {
+ 005A 6C2D              mov R22,R12
+ 005C 7727              clr R23
+ 005E 6130              cpi R22,1
+ 0060 E0E0              ldi R30,0
+ 0062 7E07              cpc R23,R30
+ 0064 C9F0              breq L14
+ 0066           X2:
+ 0066 6230              cpi R22,2
+ 0068 E0E0              ldi R30,0
+ 006A 7E07              cpc R23,R30
+ 006C 41F1              breq L21
+ 006E           X3:
+ 006E 6330              cpi R22,3
+ 0070 E0E0              ldi R30,0
+ 0072 7E07              cpc R23,R30
+ 0074 09F4              brne X26
+ 0076 36C0              xjmp L28
+ 0078           X26:
+ 0078           X4:
+ 0078 6430              cpi R22,4
+ 007A E0E0              ldi R30,0
+ 007C 7E07              cpc R23,R30
+ 007E 09F4              brne X27
+ 0080 44C0              xjmp L35
+ 0082           X27:
+ 0082           X5:
+ 0082 6530              cpi R22,5
+ 0084 E0E0              ldi R30,0
+ 0086 7E07              cpc R23,R30
+ 0088 09F4              brne X28
+ 008A 5AC0              xjmp L42
+ 008C           X28:
+ 008C           X6:
+ 008C 6630              cpi R22,6
+ 008E E0E0              ldi R30,0
+ 0090 7E07              cpc R23,R30
+ 0092 09F4              brne X29
+ 0094 6FC0              xjmp L49
+ 0096           X29:
+ 0096           X7:
+ 0096 87C0              xjmp L11
+ 0098           L14:
+ 0098                   .dbline 94
+ 0098           ;       case 1:
+ 0098           ;               if (motor == MOTOR_A)
+ 0098 4134              cpi R20,65
+ 009A 21F4              brne L15
+ 009C           X8:
+ 009C                   .dbline 95
+ 009C           ;                       angle_1A(angle);
+ 009C 0A2D              mov R16,R10
+ 009E 0E940000          xcall _angle_1A
+ 00A2 81C0              xjmp L12
+ 00A4           L15:
+ 00A4                   .dbline 96
+ 00A4           ;               else if (motor == MOTOR_B)
+ 00A4 4234              cpi R20,66
+ 00A6 21F4              brne L17
+ 00A8           X9:
+ 00A8                   .dbline 97
+ 00A8           ;                       angle_1B(angle);
+ 00A8 0A2D              mov R16,R10
+ 00AA 0E940000          xcall _angle_1B
+ 00AE 7BC0              xjmp L12
+ 00B0           L17:
+ 00B0                   .dbline 98
+ 00B0           ;               else if (motor == MOTOR_C)
+ 00B0 4334              cpi R20,67
+ 00B2 09F0              breq X30
+ 00B4 78C0              xjmp L12
+ 00B6           X30:
+ 00B6           X10:
+ 00B6                   .dbline 99
+ 00B6           ;                       angle_1C(angle);
+ 00B6 0A2D              mov R16,R10
+ 00B8 0E940000          xcall _angle_1C
+ 00BC                   .dbline 100
+ 00BC           ;               break;
+ 00BC 74C0              xjmp L12
+ 00BE           L21:
+ 00BE                   .dbline 102
+ 00BE           ;       case 2:
+ 00BE           ;               if (motor == MOTOR_A)
+ 00BE 4134              cpi R20,65
+ 00C0 21F4              brne L22
+ 00C2           X11:
+ 00C2                   .dbline 103
+ 00C2           ;                       angle_2A(angle);
+ 00C2 0A2D              mov R16,R10
+ 00C4 0E940000          xcall _angle_2A
+ 00C8 6EC0              xjmp L12
+ 00CA           L22:
+ 00CA                   .dbline 104
+ 00CA           ;               else if (motor == MOTOR_B)
+ 00CA 4234              cpi R20,66
+ 00CC 21F4              brne L24
+ 00CE           X12:
+ 00CE                   .dbline 105
+ 00CE           ;                       angle_2B(angle);
+ 00CE 0A2D              mov R16,R10
+ 00D0 0E940000          xcall _angle_2B
+ 00D4 68C0              xjmp L12
+ 00D6           L24:
+ 00D6                   .dbline 106
+ 00D6           ;               else if (motor == MOTOR_C)
+ 00D6 4334              cpi R20,67
+ 00D8 09F0              breq X31
+ 00DA 65C0              xjmp L12
+ 00DC           X31:
+ 00DC           X13:
+ 00DC                   .dbline 107
+ 00DC           ;                       angle_2C(angle);
+ 00DC 0A2D              mov R16,R10
+ 00DE 0E940000          xcall _angle_2C
+ 00E2                   .dbline 108
+ 00E2           ;               break;
+ 00E2 61C0              xjmp L12
+ 00E4           L28:
+ 00E4                   .dbline 110
+ 00E4           ;       case 3:
+ 00E4           ;               if (motor == MOTOR_A)
+ 00E4 4134              cpi R20,65
+ 00E6 21F4              brne L29
+ 00E8           X14:
+ 00E8                   .dbline 111
+ 00E8           ;                       angle_3A(angle);
+ 00E8 0A2D              mov R16,R10
+ 00EA 0E940000          xcall _angle_3A
+ 00EE 5BC0              xjmp L12
+ 00F0           L29:
+ 00F0                   .dbline 112
+ 00F0           ;               else if (motor == MOTOR_B)
+ 00F0 4234              cpi R20,66
+ 00F2 21F4              brne L31
+ 00F4           X15:
+ 00F4                   .dbline 113
+ 00F4           ;                       angle_3B(angle);
+ 00F4 0A2D              mov R16,R10
+ 00F6 0E940000          xcall _angle_3B
+ 00FA 55C0              xjmp L12
+ 00FC           L31:
+ 00FC                   .dbline 114
+ 00FC           ;               else if (motor == MOTOR_C)
+ 00FC 4334              cpi R20,67
+ 00FE 09F0              breq X32
+ 0100 52C0              xjmp L12
+ 0102           X32:
+ 0102           X16:
+ 0102                   .dbline 115
+ 0102           ;                       angle_3C(angle);
+ 0102 0A2D              mov R16,R10
+ 0104 0E940000          xcall _angle_3C
+ 0108                   .dbline 116
+ 0108           ;               break;
+ 0108 4EC0              xjmp L12
+ 010A           L35:
+ 010A                   .dbline 118
+ 010A           ;       case 4:
+ 010A           ;               if (motor == MOTOR_A)
+ 010A 4134              cpi R20,65
+ 010C 21F4              brne L36
+ 010E           X17:
+ 010E                   .dbline 119
+ 010E           ;                       angle_4A(angle);
+ 010E 0A2D              mov R16,R10
+ 0110 0E940000          xcall _angle_4A
+ 0114 48C0              xjmp L12
+ 0116           L36:
+ 0116                   .dbline 120
+ 0116           ;               else if (motor == MOTOR_B)
+ 0116 4234              cpi R20,66
+ 0118 41F4              brne L38
+ 011A           X18:
+ 011A                   .dbline 121
+ 011A           ;                       angle_4B(180 - angle);
+ 011A 2A2C              mov R2,R10
+ 011C 3324              clr R3
+ 011E 04EB              ldi R16,180
+ 0120 0219              sub R16,R2
+ 0122 1309              sbc R17,R3
+ 0124 0E940000          xcall _angle_4B
+ 0128 3EC0              xjmp L12
+ 012A           L38:
+ 012A                   .dbline 122
+ 012A           ;               else if (motor == MOTOR_C)
+ 012A 4334              cpi R20,67
+ 012C 09F0              breq X33
+ 012E 3BC0              xjmp L12
+ 0130           X33:
+ 0130           X19:
+ 0130                   .dbline 123
+ 0130           ;                       angle_4C(180 - angle);
+ 0130 2A2C              mov R2,R10
+ 0132 3324              clr R3
+ 0134 04EB              ldi R16,180
+ 0136 0219              sub R16,R2
+ 0138 1309              sbc R17,R3
+ 013A 0E940000          xcall _angle_4C
+ 013E                   .dbline 124
+ 013E           ;               break;
+ 013E 33C0              xjmp L12
+ 0140           L42:
+ 0140                   .dbline 126
+ 0140           ;       case 5:
+ 0140           ;               if (motor == MOTOR_A)
+ 0140 4134              cpi R20,65
+ 0142 21F4              brne L43
+ 0144           X20:
+ 0144                   .dbline 127
+ 0144           ;                       angle_5A(angle);
+ 0144 0A2D              mov R16,R10
+ 0146 0E940000          xcall _angle_5A
+ 014A 2DC0              xjmp L12
+ 014C           L43:
+ 014C                   .dbline 128
+ 014C           ;               else if (motor == MOTOR_B)
+ 014C 4234              cpi R20,66
+ 014E 41F4              brne L45
+ 0150           X21:
+ 0150                   .dbline 129
+ 0150           ;                       angle_5B(180 - angle);
+ 0150 2A2C              mov R2,R10
+ 0152 3324              clr R3
+ 0154 04EB              ldi R16,180
+ 0156 0219              sub R16,R2
+ 0158 1309              sbc R17,R3
+ 015A 0E940000          xcall _angle_5B
+ 015E 23C0              xjmp L12
+ 0160           L45:
+ 0160                   .dbline 130
+ 0160           ;               else if (motor == MOTOR_C)
+ 0160 4334              cpi R20,67
+ 0162 09F5              brne L12
+ 0164           X22:
+ 0164                   .dbline 131
+ 0164           ;                       angle_5C(180 - angle);
+ 0164 2A2C              mov R2,R10
+ 0166 3324              clr R3
+ 0168 04EB              ldi R16,180
+ 016A 0219              sub R16,R2
+ 016C 1309              sbc R17,R3
+ 016E 0E940000          xcall _angle_5C
+ 0172                   .dbline 132
+ 0172           ;               break;
+ 0172 19C0              xjmp L12
+ 0174           L49:
+ 0174                   .dbline 134
+ 0174           ;       case 6:
+ 0174           ;               if (motor == MOTOR_A)
+ 0174 4134              cpi R20,65
+ 0176 21F4              brne L50
+ 0178           X23:
+ 0178                   .dbline 135
+ 0178           ;                       angle_6A(angle);
+ 0178 0A2D              mov R16,R10
+ 017A 0E940000          xcall _angle_6A
+ 017E 13C0              xjmp L12
+ 0180           L50:
+ 0180                   .dbline 136
+ 0180           ;               else if (motor == MOTOR_B)
+ 0180 4234              cpi R20,66
+ 0182 41F4              brne L52
+ 0184           X24:
+ 0184                   .dbline 137
+ 0184           ;                       angle_6B(180 - angle);
+ 0184 2A2C              mov R2,R10
+ 0186 3324              clr R3
+ 0188 04EB              ldi R16,180
+ 018A 0219              sub R16,R2
+ 018C 1309              sbc R17,R3
+ 018E 0E940000          xcall _angle_6B
+ 0192 09C0              xjmp L12
+ 0194           L52:
+ 0194                   .dbline 138
+ 0194           ;               else if (motor == MOTOR_C)
+ 0194 4334              cpi R20,67
+ 0196 39F4              brne L12
+ 0198           X25:
+ 0198                   .dbline 139
+ 0198           ;                       angle_6C(180 - angle);
+ 0198 2A2C              mov R2,R10
+ 019A 3324              clr R3
+ 019C 04EB              ldi R16,180
+ 019E 0219              sub R16,R2
+ 01A0 1309              sbc R17,R3
+ 01A2 0E940000          xcall _angle_6C
+ 01A6                   .dbline 140
+ 01A6           ;               break;
+ 01A6           L11:
+ 01A6           L12:
+ 01A6                   .dbline -2
+ 01A6           L10:
+ 01A6                   .dbline 0 ; func end
+ 01A6 2196              adiw R28,1
+ 01A8 0C940000          xjmp pop_xgsetF03C
+ 01AC                   .dbsym r angle 10 c
+ 01AC                   .dbsym r motor 20 c
+ 01AC                   .dbsym r arm 12 c
+ 01AC                   .dbend
+ 01AC                   .dbfunc e angle_XA _angle_XA fV
+ 01AC           ;          angle -> R10
+                        .even
+ 01AC           _angle_XA::
+ 01AC AA92              st -y,R10
+ 01AE A02E              mov R10,R16
+ 01B0                   .dbline -1
+ 01B0                   .dbline 149
+ 01B0           ;       }
+ 01B0           ; }
+ 01B0           ; 
+ 01B0           ; 
+ 01B0           ; /**
+ 01B0           ; Sets the angle of all the MOTOR_XA servo
+ 01B0           ; @param angle : The angle to be set
+ 01B0           ; */
+ 01B0           ; void angle_XA(unsigned char angle) {
+ 01B0                   .dbline 150
+ 01B0           ;       angle_1A(angle);
+ 01B0 0A2D              mov R16,R10
+ 01B2 0E940000          xcall _angle_1A
+ 01B6                   .dbline 151
+ 01B6           ;       angle_2A(angle);
+ 01B6 0A2D              mov R16,R10
+ 01B8 0E940000          xcall _angle_2A
+ 01BC                   .dbline 152
+ 01BC           ;       angle_3A(angle);
+ 01BC 0A2D              mov R16,R10
+ 01BE 0E940000          xcall _angle_3A
+ 01C2                   .dbline 153
+ 01C2           ;       angle_4A(angle);
+ 01C2 0A2D              mov R16,R10
+ 01C4 0E940000          xcall _angle_4A
+ 01C8                   .dbline 154
+ 01C8           ;       angle_5A(angle);
+ 01C8 0A2D              mov R16,R10
+ 01CA 0E940000          xcall _angle_5A
+ 01CE                   .dbline 155
+ 01CE           ;       angle_6A(angle);
+ 01CE 0A2D              mov R16,R10
+ 01D0 0E940000          xcall _angle_6A
+ 01D4                   .dbline -2
+ 01D4           L56:
+ 01D4                   .dbline 0 ; func end
+ 01D4 A990              ld R10,y+
+ 01D6 0895              ret
+ 01D8                   .dbsym r angle 10 c
+ 01D8                   .dbend
+ 01D8                   .dbfunc e angle_XB _angle_XB fV
+ 01D8           ;          angle -> R10
+                        .even
+ 01D8           _angle_XB::
+ 01D8 AA92              st -y,R10
+ 01DA A02E              mov R10,R16
+ 01DC                   .dbline -1
+ 01DC                   .dbline 162
+ 01DC           ; }
+ 01DC           ; 
+ 01DC           ; /**
+ 01DC           ; Sets the angle of all the MOTOR_XB servo
+ 01DC           ; @param angle : The angle to be set
+ 01DC           ; */
+ 01DC           ; void angle_XB(unsigned char angle) {
+ 01DC                   .dbline 163
+ 01DC           ;       angle_1B(angle);
+ 01DC 0A2D              mov R16,R10
+ 01DE 0E940000          xcall _angle_1B
+ 01E2                   .dbline 164
+ 01E2           ;       angle_2B(angle);
+ 01E2 0A2D              mov R16,R10
+ 01E4 0E940000          xcall _angle_2B
+ 01E8                   .dbline 165
+ 01E8           ;       angle_3B(angle);
+ 01E8 0A2D              mov R16,R10
+ 01EA 0E940000          xcall _angle_3B
+ 01EE                   .dbline 166
+ 01EE           ;       angle_4B(180 - angle);
+ 01EE 2A2C              mov R2,R10
+ 01F0 3324              clr R3
+ 01F2 04EB              ldi R16,180
+ 01F4 0219              sub R16,R2
+ 01F6 1309              sbc R17,R3
+ 01F8 0E940000          xcall _angle_4B
+ 01FC                   .dbline 167
+ 01FC           ;       angle_5B(180 - angle);
+ 01FC 2A2C              mov R2,R10
+ 01FE 3324              clr R3
+ 0200 04EB              ldi R16,180
+ 0202 0219              sub R16,R2
+ 0204 1309              sbc R17,R3
+ 0206 0E940000          xcall _angle_5B
+ 020A                   .dbline 168
+ 020A           ;       angle_6B(180 - angle);
+ 020A 2A2C              mov R2,R10
+ 020C 3324              clr R3
+ 020E 04EB              ldi R16,180
+ 0210 0219              sub R16,R2
+ 0212 1309              sbc R17,R3
+ 0214 0E940000          xcall _angle_6B
+ 0218                   .dbline -2
+ 0218           L57:
+ 0218                   .dbline 0 ; func end
+ 0218 A990              ld R10,y+
+ 021A 0895              ret
+ 021C                   .dbsym r angle 10 c
+ 021C                   .dbend
+ 021C                   .dbfunc e angle_XC _angle_XC fV
+ 021C           ;          angle -> R10
+                        .even
+ 021C           _angle_XC::
+ 021C AA92              st -y,R10
+ 021E A02E              mov R10,R16
+ 0220                   .dbline -1
+ 0220                   .dbline 176
+ 0220           ; }
+ 0220           ; 
+ 0220           ; 
+ 0220           ; /**
+ 0220           ; Sets the angle of all the MOTOR_XC servo
+ 0220           ; @param angle : The angle to be set
+ 0220           ; */
+ 0220           ; void angle_XC(unsigned char angle) {
+ 0220                   .dbline 177
+ 0220           ;       angle_1C(angle);
+ 0220 0A2D              mov R16,R10
+ 0222 0E940000          xcall _angle_1C
+ 0226                   .dbline 178
+ 0226           ;       angle_2C(angle);
+ 0226 0A2D              mov R16,R10
+ 0228 0E940000          xcall _angle_2C
+ 022C                   .dbline 179
+ 022C           ;       angle_3C(angle);
+ 022C 0A2D              mov R16,R10
+ 022E 0E940000          xcall _angle_3C
+ 0232                   .dbline 180
+ 0232           ;       angle_4C(180 - angle);
+ 0232 2A2C              mov R2,R10
+ 0234 3324              clr R3
+ 0236 04EB              ldi R16,180
+ 0238 0219              sub R16,R2
+ 023A 1309              sbc R17,R3
+ 023C 0E940000          xcall _angle_4C
+ 0240                   .dbline 181
+ 0240           ;       angle_5C(180 - angle);
+ 0240 2A2C              mov R2,R10
+ 0242 3324              clr R3
+ 0244 04EB              ldi R16,180
+ 0246 0219              sub R16,R2
+ 0248 1309              sbc R17,R3
+ 024A 0E940000          xcall _angle_5C
+ 024E                   .dbline 182
+ 024E           ;       angle_6C(180 - angle);
+ 024E 2A2C              mov R2,R10
+ 0250 3324              clr R3
+ 0252 04EB              ldi R16,180
+ 0254 0219              sub R16,R2
+ 0256 1309              sbc R17,R3
+ 0258 0E940000          xcall _angle_6C
+ 025C                   .dbline -2
+ 025C           L58:
+ 025C                   .dbline 0 ; func end
+ 025C A990              ld R10,y+
+ 025E 0895              ret
+ 0260                   .dbsym r angle 10 c
+ 0260                   .dbend
+ 0260                   .dbfunc e swap _swap fV
+ 0260           ;              t -> R10
+ 0260           ;              b -> R18,R19
+ 0260           ;              a -> R16,R17
+                        .even
+ 0260           _swap::
+ 0260 AA92              st -y,R10
+ 0262                   .dbline -1
+ 0262                   .dbline 190
+ 0262           ; }
+ 0262           ; 
+ 0262           ; 
+ 0262           ; 
+ 0262           ; /**
+ 0262           ; Swaps two unsigned char
+ 0262           ; */
+ 0262           ; void swap(unsigned char *a, unsigned char *b) {
+ 0262                   .dbline 191
+ 0262           ;        unsigned char t = *a;
+ 0262 F801              movw R30,R16
+ 0264 A080              ldd R10,z+0
+ 0266                   .dbline 192
+ 0266           ;        *a = *b;
+ 0266 F901              movw R30,R18
+ 0268 2080              ldd R2,z+0
+ 026A F801              movw R30,R16
+ 026C 2082              std z+0,R2
+ 026E                   .dbline 193
+ 026E           ;        *b = t;
+ 026E F901              movw R30,R18
+ 0270 A082              std z+0,R10
+ 0272                   .dbline -2
+ 0272           L59:
+ 0272                   .dbline 0 ; func end
+ 0272 A990              ld R10,y+
+ 0274 0895              ret
+ 0276                   .dbsym r t 10 c
+ 0276                   .dbsym r b 18 pc
+ 0276                   .dbsym r a 16 pc
+ 0276                   .dbend
+ 0276                   .dbfunc e setAngle _setAngle fV
+ 0276           ;          angle -> y+0
+ 0276           ;          motor -> R18
+ 0276           ;            arm -> R16
+                        .even
+ 0276           _setAngle::
+ 0276                   .dbline -1
+ 0276                   .dbline 196
+ 0276           ; }
+ 0276           ; 
+ 0276           ; void setAngle(unsigned char arm, unsigned char motor, unsigned char angle) {
+ 0276                   .dbline 197
+ 0276           ;        angleArr[arm][motor - 'A'] = angle;
+ 0276 83E0              ldi R24,3
+ 0278 809F              mul R24,R16
+ 027A 1001              movw R2,R0
+ 027C 80E0              ldi R24,<_angleArr
+ 027E 90E0              ldi R25,>_angleArr
+ 0280 280E              add R2,R24
+ 0282 391E              adc R3,R25
+ 0284 E22F              mov R30,R18
+ 0286 FF27              clr R31
+ 0288 E154              subi R30,65
+ 028A F040              sbci R31,0
+ 028C E20D              add R30,R2
+ 028E F31D              adc R31,R3
+ 0290 0880              ldd R0,y+0
+ 0292 0082              std z+0,R0
+ 0294                   .dbline -2
+ 0294           L60:
+ 0294                   .dbline 0 ; func end
+ 0294 0895              ret
+ 0296                   .dbsym l angle 0 c
+ 0296                   .dbsym r motor 18 c
+ 0296                   .dbsym r arm 16 c
+ 0296                   .dbend
+ 0296                   .dbfunc e getAngle _getAngle fc
+ 0296           ;          motor -> R18
+ 0296           ;            arm -> R16
+                        .even
+ 0296           _getAngle::
+ 0296                   .dbline -1
+ 0296                   .dbline 200
+ 0296           ; }
+ 0296           ; 
+ 0296           ; unsigned char getAngle(unsigned char arm, unsigned char motor) {
+ 0296                   .dbline 201
+ 0296           ;        return angleArr[arm][motor - 'A'];
+ 0296 83E0              ldi R24,3
+ 0298 809F              mul R24,R16
+ 029A 1001              movw R2,R0
+ 029C 80E0              ldi R24,<_angleArr
+ 029E 90E0              ldi R25,>_angleArr
+ 02A0 280E              add R2,R24
+ 02A2 391E              adc R3,R25
+ 02A4 E22F              mov R30,R18
+ 02A6 FF27              clr R31
+ 02A8 E154              subi R30,65
+ 02AA F040              sbci R31,0
+ 02AC E20D              add R30,R2
+ 02AE F31D              adc R31,R3
+ 02B0 0081              ldd R16,z+0
+ 02B2                   .dbline -2
+ 02B2           L61:
+ 02B2                   .dbline 0 ; func end
+ 02B2 0895              ret
+ 02B4                   .dbsym r motor 18 c
+ 02B4                   .dbsym r arm 16 c
+ 02B4                   .dbend
+                        .area data(ram, con, rel)
+ 0001                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+ 0001           L63:
+ 0001                   .blkb 2
+                        .area idata
+ 0001 0100              .word 1
+                        .area data(ram, con, rel)
+ 0003                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+                        .area text(rom, con, rel)
+ 02B4                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+ 02B4                   .dbfunc e buzzer_on_off _buzzer_on_off fV
+ 02B4                   .dbsym s flag L63 I
+                        .even
+ 02B4           _buzzer_on_off::
+ 02B4                   .dbline -1
+ 02B4                   .dbline 208
+ 02B4           ; }
+ 02B4           ; 
+ 02B4           ; 
+ 02B4           ; /**
+ 02B4           ; Flips the state of the buzzer
+ 02B4           ; */
+ 02B4           ; void buzzer_on_off() {
+ 02B4                   .dbline 210
+ 02B4           ;      static int flag = 1;
+ 02B4           ;        if(flag) {
+ 02B4 20900100          lds R2,L63
+ 02B8 30900200          lds R3,L63+1
+ 02BC 2220              tst R2
+ 02BE 11F4              brne X34
+ 02C0 3320              tst R3
+ 02C2 49F0              breq L64
+ 02C4           X34:
+ 02C4                   .dbline 210
+ 02C4                   .dbline 211
+ 02C4           ;            buzzer_on();
+ 02C4 0E940000          xcall _buzzer_on
+ 02C8                   .dbline 212
+ 02C8           ;                flag = 0;
+ 02C8 2224              clr R2
+ 02CA 3324              clr R3
+ 02CC 30920200          sts L63+1,R3
+ 02D0 20920100          sts L63,R2
+ 02D4                   .dbline 213
+ 02D4           ;        }else {
+ 02D4 08C0              xjmp L65
+ 02D6           L64:
+ 02D6                   .dbline 213
+ 02D6                   .dbline 214
+ 02D6           ;            buzzer_off();
+ 02D6 0E940000          xcall _buzzer_off
+ 02DA                   .dbline 215
+ 02DA           ;            flag = 1;  
+ 02DA 81E0              ldi R24,1
+ 02DC 90E0              ldi R25,0
+ 02DE 90930200          sts L63+1,R25
+ 02E2 80930100          sts L63,R24
+ 02E6                   .dbline 216
+ 02E6           ;        }
+ 02E6           L65:
+ 02E6                   .dbline -2
+ 02E6           L62:
+ 02E6                   .dbline 0 ; func end
+ 02E6 0895              ret
+ 02E8                   .dbend
+ 02E8                   .dbfunc e angle_change _angle_change fV
+ 02E8           ;         angle1 -> R20
+ 02E8           ;         change -> R22
+ 02E8           ;          motor -> R12
+ 02E8           ;            arm -> R10
+                        .even
+ 02E8           _angle_change::
+ 02E8 0E940000          xcall push_xgsetF0FC
+ 02EC C22E              mov R12,R18
+ 02EE A02E              mov R10,R16
+ 02F0 2197              sbiw R28,1
+ 02F2 6B85              ldd R22,y+11
+ 02F4                   .dbline -1
+ 02F4                   .dbline 223
+ 02F4           ; }
+ 02F4           ; 
+ 02F4           ; /**
+ 02F4           ; Changes the angle of a servo by change
+ 02F4           ; Problem with this routine
+ 02F4           ; */
+ 02F4           ; void angle_change(unsigned char arm, unsigned char motor, char change) {
+ 02F4                   .dbline 227
+ 02F4           ;     
+ 02F4           ;       unsigned char angle1;
+ 02F4           ;       
+ 02F4           ;        if(change + getAngle(arm, motor) < DEGREE_MIN || change + getAngle(arm, motor)  > 240) {
+ 02F4 2C2D              mov R18,R12
+ 02F6 0A2D              mov R16,R10
+ 02F8 CEDF              xcall _getAngle
+ 02FA 862F              mov R24,R22
+ 02FC 800F              add R24,R16
+ 02FE 8030              cpi R24,0
+ 0300 40F0              brlo L69
+ 0302           X35:
+ 0302 2C2D              mov R18,R12
+ 0304 0A2D              mov R16,R10
+ 0306 C7DF              xcall _getAngle
+ 0308 262E              mov R2,R22
+ 030A 200E              add R2,R16
+ 030C 80EF              ldi R24,240
+ 030E 8215              cp R24,R2
+ 0310 10F4              brsh L67
+ 0312           X36:
+ 0312           L69:
+ 0312                   .dbline 227
+ 0312                   .dbline 228
+ 0312           ;                          angle1 = DEGREE_MIN;
+ 0312 4427              clr R20
+ 0314                   .dbline 230
+ 0314           ;                          //buzzer_on();
+ 0314           ;       } else if(change + getAngle(arm, motor)  > DEGREE_MAX) {
+ 0314 11C0              xjmp L68
+ 0316           L67:
+ 0316                   .dbline 230
+ 0316 2C2D              mov R18,R12
+ 0318 0A2D              mov R16,R10
+ 031A BDDF              xcall _getAngle
+ 031C E02E              mov R14,R16
+ 031E 262E              mov R2,R22
+ 0320 200E              add R2,R16
+ 0322 84EB              ldi R24,180
+ 0324 8215              cp R24,R2
+ 0326 10F4              brsh L70
+ 0328           X37:
+ 0328                   .dbline 230
+ 0328                   .dbline 231
+ 0328           ;                  angle1 = DEGREE_MAX;
+ 0328 44EB              ldi R20,180
+ 032A                   .dbline 233
+ 032A           ;                          //buzzer_on();
+ 032A           ;       } else {
+ 032A 06C0              xjmp L71
+ 032C           L70:
+ 032C                   .dbline 233
+ 032C                   .dbline 234
+ 032C           ;                          angle1 = change + getAngle(arm, motor);
+ 032C 2C2D              mov R18,R12
+ 032E 0A2D              mov R16,R10
+ 0330 B2DF              xcall _getAngle
+ 0332 E02E              mov R14,R16
+ 0334 462F              mov R20,R22
+ 0336 400F              add R20,R16
+ 0338                   .dbline 235
+ 0338           ;       }
+ 0338           L71:
+ 0338           L68:
+ 0338                   .dbline 236
+ 0338           ;       angle(arm, motor, angle1);
+ 0338 4883              std y+0,R20
+ 033A 2C2D              mov R18,R12
+ 033C 0A2D              mov R16,R10
+ 033E 83DE              xcall _angle
+ 0340                   .dbline -2
+ 0340           L66:
+ 0340                   .dbline 0 ; func end
+ 0340 2196              adiw R28,1
+ 0342 0C940000          xjmp pop_xgsetF0FC
+ 0346                   .dbsym r angle1 20 c
+ 0346                   .dbsym r change 22 c
+ 0346                   .dbsym r motor 12 c
+ 0346                   .dbsym r arm 10 c
+ 0346                   .dbend
+ 0346                   .dbfunc e setMirrorDir _setMirrorDir fV
+ 0346           ;            dir -> R16
+                        .even
+ 0346           _setMirrorDir::
+ 0346                   .dbline -1
+ 0346                   .dbline 245
+ 0346           ;       
+ 0346           ; }
+ 0346           ; 
+ 0346           ; 
+ 0346           ; /**
+ 0346           ; The sets the direction for the angleMirror function
+ 0346           ; Used to move two legs with the same angle
+ 0346           ; */
+ 0346           ; void setMirrorDir(unsigned char dir) {
+ 0346                   .dbline 246
+ 0346           ;        dirMirror = dir;
+ 0346 00930000          sts _dirMirror,R16
+ 034A                   .dbline -2
+ 034A           L72:
+ 034A                   .dbline 0 ; func end
+ 034A 0895              ret
+ 034C                   .dbsym r dir 16 c
+ 034C                   .dbend
+ 034C                   .dbfunc e getMirrorDir _getMirrorDir fc
+                        .even
+ 034C           _getMirrorDir::
+ 034C                   .dbline -1
+ 034C                   .dbline 252
+ 034C           ; }
+ 034C           ; 
+ 034C           ; /**
+ 034C           ; Returns the Mirror diricetion
+ 034C           ; */
+ 034C           ; unsigned char getMirrorDir(void ) {
+ 034C                   .dbline 253
+ 034C           ;        return dirMirror;
+ 034C 00910000          lds R16,_dirMirror
+ 0350                   .dbline -2
+ 0350           L73:
+ 0350                   .dbline 0 ; func end
+ 0350 0895              ret
+ 0352                   .dbend
+                        .area lit(rom, con, rel)
+ 0000           L75:
+ 0000 0200              .word 2
+ 0002 0100              .word 1
+ 0004 0400              .word 4
+ 0006 0300              .word 3
+ 0008 0600              .word 6
+ 000A 0500              .word 5
+ 000C 0600              .word 6
+ 000E 0300              .word 3
+ 0010 0200              .word 2
+ 0012 0500              .word 5
+ 0014 0400              .word 4
+ 0016 0100              .word 1
+ 0018 0400              .word 4
+ 001A 0500              .word 5
+ 001C 0600              .word 6
+ 001E 0100              .word 1
+ 0020 0200              .word 2
+ 0022 0300              .word 3
+                        .area text(rom, con, rel)
+ 0352                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+ 0352                   .dbfunc e getMirrorArm _getMirrorArm fc
+ 0352           ;     arr_mirror -> y+0
+ 0352           ;            arm -> R10
+                        .even
+ 0352           _getMirrorArm::
+ 0352 AA92              st -y,R10
+ 0354 A02E              mov R10,R16
+ 0356 A497              sbiw R28,36
+ 0358                   .dbline -1
+ 0358                   .dbline 259
+ 0358           ; }
+ 0358           ; 
+ 0358           ; /**
+ 0358           ; Returns the arm which mirrors the arm according to the dirMirror
+ 0358           ; */
+ 0358           ; unsigned char getMirrorArm(unsigned char arm) {
+ 0358                   .dbline 260
+ 0358           ;                int arr_mirror[3][6] =  {{LEG_2, LEG_1, LEG_4, LEG_3, LEG_6, LEG_5}, 
+ 0358 80E0              ldi R24,<L75
+ 035A 90E0              ldi R25,>L75
+ 035C FE01              movw R30,R28
+ 035E 04E2              ldi R16,36
+ 0360 10E0              ldi R17,0
+ 0362 FA93              st -y,R31
+ 0364 EA93              st -y,R30
+ 0366 9A93              st -y,R25
+ 0368 8A93              st -y,R24
+ 036A 0E940000          xcall asgncblkx
+ 036E                   .dbline 263
+ 036E           ;                                                               {LEG_6, LEG_3, LEG_2, LEG_5, LEG_4, LEG_1}, 
+ 036E           ;                                                               {LEG_4, LEG_5, LEG_6, LEG_1, LEG_2, LEG_3}};
+ 036E           ;                return arr_mirror[getMirrorDir()][arm - 1];
+ 036E EEDF              xcall _getMirrorDir
+ 0370 8CE0              ldi R24,12
+ 0372 809F              mul R24,R16
+ 0374 1001              movw R2,R0
+ 0376 CE01              movw R24,R28
+ 0378 280E              add R2,R24
+ 037A 391E              adc R3,R25
+ 037C EA2D              mov R30,R10
+ 037E FF27              clr R31
+ 0380 3197              sbiw R30,1
+ 0382 EE0F              lsl R30
+ 0384 FF1F              rol R31
+ 0386 E20D              add R30,R2
+ 0388 F31D              adc R31,R3
+ 038A 0081              ldd R16,z+0
+ 038C                   .dbline -2
+ 038C           L74:
+ 038C                   .dbline 0 ; func end
+ 038C A496              adiw R28,36
+ 038E A990              ld R10,y+
+ 0390 0895              ret
+ 0392                   .dbsym l arr_mirror 0 A[36:3:6]I
+ 0392                   .dbsym r arm 10 c
+ 0392                   .dbend
+ 0392                   .dbfunc e angleMirror _angleMirror fV
+ 0392           ;     arm_mirror -> R10
+ 0392           ;       angleSet -> R12
+ 0392           ;          motor -> R20
+ 0392           ;            arm -> R14
+                        .even
+ 0392           _angleMirror::
+ 0392 0E940000          xcall push_xgset30FC
+ 0396 422F              mov R20,R18
+ 0398 E02E              mov R14,R16
+ 039A 2197              sbiw R28,1
+ 039C C984              ldd R12,y+9
+ 039E                   .dbline -1
+ 039E                   .dbline 273
+ 039E           ; }
+ 039E           ; 
+ 039E           ; 
+ 039E           ; /**
+ 039E           ; Sets the angle of the arm servo and its Mirror arm to the angle angleSet
+ 039E           ; @param arm : Arm of the hexapod
+ 039E           ; @param motor : The motor of the hexapod
+ 039E           ; @param angleSet :  The angle to be set 
+ 039E           ; */
+ 039E           ; void angleMirror(unsigned char arm, unsigned char motor, unsigned char angleSet) {
+ 039E                   .dbline 274
+ 039E           ;        unsigned char arm_mirror = getMirrorArm(arm);
+ 039E 0E2D              mov R16,R14
+ 03A0 D8DF              xcall _getMirrorArm
+ 03A2 A02E              mov R10,R16
+ 03A4                   .dbline 275
+ 03A4           ;        angle(arm, motor, angleSet);
+ 03A4 C882              std y+0,R12
+ 03A6 242F              mov R18,R20
+ 03A8 0E2D              mov R16,R14
+ 03AA 4DDE              xcall _angle
+ 03AC                   .dbline 276
+ 03AC           ;        if(motor == MOTOR_A)
+ 03AC 4134              cpi R20,65
+ 03AE 59F4              brne L77
+ 03B0           X38:
+ 03B0                   .dbline 277
+ 03B0           ;                angle(arm_mirror, motor, 180 - angleSet);
+ 03B0 2C2C              mov R2,R12
+ 03B2 3324              clr R3
+ 03B4 84EB              ldi R24,180
+ 03B6 90E0              ldi R25,0
+ 03B8 8219              sub R24,R2
+ 03BA 9309              sbc R25,R3
+ 03BC 8883              std y+0,R24
+ 03BE 242F              mov R18,R20
+ 03C0 0A2D              mov R16,R10
+ 03C2 41DE              xcall _angle
+ 03C4 04C0              xjmp L78
+ 03C6           L77:
+ 03C6                   .dbline 279
+ 03C6           ;        else
+ 03C6           ;                angle(arm_mirror, motor, angleSet);
+ 03C6 C882              std y+0,R12
+ 03C8 242F              mov R18,R20
+ 03CA 0A2D              mov R16,R10
+ 03CC 3CDE              xcall _angle
+ 03CE           L78:
+ 03CE                   .dbline -2
+ 03CE           L76:
+ 03CE                   .dbline 0 ; func end
+ 03CE 2196              adiw R28,1
+ 03D0 0C940000          xjmp pop_xgset30FC
+ 03D4                   .dbsym r arm_mirror 10 c
+ 03D4                   .dbsym r angleSet 12 c
+ 03D4                   .dbsym r motor 20 c
+ 03D4                   .dbsym r arm 14 c
+ 03D4                   .dbend
+ 03D4                   .dbfunc e angleMirrorChange _angleMirrorChange fV
+ 03D4           ;     arm_mirror -> R10
+ 03D4           ;    angleChange -> R14
+ 03D4           ;          motor -> R12
+ 03D4           ;            arm -> R20
+                        .even
+ 03D4           _angleMirrorChange::
+ 03D4 0E940000          xcall push_xgset30FC
+ 03D8 C22E              mov R12,R18
+ 03DA 402F              mov R20,R16
+ 03DC 2197              sbiw R28,1
+ 03DE E984              ldd R14,y+9
+ 03E0                   .dbline -1
+ 03E0                   .dbline 289
+ 03E0           ;                                 
+ 03E0           ; }
+ 03E0           ; 
+ 03E0           ; /**
+ 03E0           ; Changes angle of the arm servo and its Mirror arm by the angle angleChange
+ 03E0           ; @param arm : Arm of the hexapod
+ 03E0           ; @param motor : The motor of the hexapod
+ 03E0           ; @param angleChange :  The angle to change by 
+ 03E0           ; */
+ 03E0           ; void angleMirrorChange(unsigned char arm, unsigned char motor, char angleChange) {
+ 03E0                   .dbline 290
+ 03E0           ;        unsigned char arm_mirror = getMirrorArm(arm);
+ 03E0 042F              mov R16,R20
+ 03E2 B7DF              xcall _getMirrorArm
+ 03E4 A02E              mov R10,R16
+ 03E6                   .dbline 291
+ 03E6           ;        angle_change(arm, motor, angleChange);
+ 03E6 E882              std y+0,R14
+ 03E8 2C2D              mov R18,R12
+ 03EA 042F              mov R16,R20
+ 03EC 7DDF              xcall _angle_change
+ 03EE                   .dbline 292
+ 03EE           ;        angle_change(arm_mirror, motor, angleChange);
+ 03EE E882              std y+0,R14
+ 03F0 2C2D              mov R18,R12
+ 03F2 0A2D              mov R16,R10
+ 03F4 79DF              xcall _angle_change
+ 03F6                   .dbline -2
+ 03F6           L79:
+ 03F6                   .dbline 0 ; func end
+ 03F6 2196              adiw R28,1
+ 03F8 0C940000          xjmp pop_xgset30FC
+ 03FC                   .dbsym r arm_mirror 10 c
+ 03FC                   .dbsym r angleChange 14 c
+ 03FC                   .dbsym r motor 12 c
+ 03FC                   .dbsym r arm 20 c
+ 03FC                   .dbend
+                        .area bss(ram, con, rel)
+ 0000                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\hexapod_basic.c
+ 0000           _angleArr::
+ 0000                   .blkb 18
+ 0012                   .dbsym e angleArr _angleArr A[18:6:3]c
+ 0012           ; }
+ 0012           ; 
+ 0012           ; 
+ 0012           ; 
+ 0012           ; 

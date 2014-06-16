@@ -1,0 +1,158 @@
+/***
+Author : Srijit Dutt
+Date Sun 07 Nov 2010 02:42:38 PM IST 
+
+keyboard.c : File contains various advanced motion functions for the hexapod
+Please include keyboard.h file to call function from this file
+
+The various functions are : 
+keyboard_control
+*/
+
+/*********************************************************************************
+
+   Copyright (c) 2010, ERTS Lab IIT Bombay erts@cse.iitb.ac.in               -*- c -*-
+   All rights reserved.
+
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions are met:
+
+   * Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+
+   * Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in
+     the documentation and/or other materials provided with the
+     distribution.
+
+   * Neither the name of the copyright holders nor the names of
+     contributors may be used to endorse or promote products derived
+     from this software without specific prior written permission.
+
+   * Source code can be used for academic purpose. 
+	 For commercial use permission form the author needs to be taken.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE. 
+
+  Software released under Creative Commence cc by-nc-sa licence.
+  For legal information refer to: 
+  http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode
+
+********************************************************************************/
+
+
+
+
+#include "hexapod_macro.h"
+#include "hexapod.h"
+#include "gait.h"
+#include "hexapod_motions.h"
+#include "hexapod_basic.h"
+
+
+extern unsigned char data;//!< The keyborad command given by user
+extern unsigned char mode;
+extern unsigned int legNo;
+extern unsigned int dir;
+extern double movementScaling;
+
+/**
+Controls hexapod through keyboard using ZigBee communication
+*/
+void keyboard_control(void) 
+{	
+	static char change = 15;
+	
+	switch(data) 
+	{
+	   case 's': //mode to reset the hexapod
+	         servo_calibration();
+			 break;	
+	   case 'm': //mode to move the hexapod
+	         mode = 'm';
+			 break;
+	   case 't': //mode to turn the hexapod
+	   		mode = 't';
+			break;
+	   case 'l':
+	   		mode = 'l';
+			break;
+	   case '<':
+	   		dir = CLOCK_WISE;
+			break;
+	   case '>':
+	   		dir = ANTI_CLOCK_WISE;
+			break;
+	   case 'd':
+	   		mode = 'd';
+			break;
+	   case '-': // case num-2
+	   		movementScaling -= 0.1;
+			if (movementScaling < 0.1) movementScaling = 0.1;
+			break;
+	   case '+':	// case num-8 
+	   		movementScaling += 0.1;
+			if (movementScaling > 1.0) movementScaling = 1.0;
+			break;
+	   case '1': 
+	   		if (mode == 'l') legNo = 1;
+			if (mode == 'm') mode = 1;
+			if (mode == 't') mode = 11;
+			if (mode == 'd') mode = 21;
+			break;
+	   case '2':
+	   		 if (mode == 'l') legNo = 2;
+			 if (mode == 'm') mode = 2;
+			 if (mode == 't') mode = 12;
+			 if (mode == 'd') mode = 22; 
+			 break;
+	   case '3':
+	   		if (mode == 'l') legNo = 3; 
+			if (mode == 'm') mode = 3;
+			if (mode == 't') mode = 13;
+			if (mode == 'd') mode = 23;
+			break;
+	   case '4':
+	   		if (mode == 'l') legNo = 4;
+			if (mode == 'm') mode = 4;
+			if (mode == 't') mode = 14;
+			if (mode == 'd') mode = 24;
+			break;
+	   case '5':
+	   		if (mode == 'l') legNo = 5;
+			if (mode == 'm') mode = 5; 
+			break;
+	   case '6':
+	   		if (mode == 'l') legNo = 6;
+			if (mode == 'm') mode = 6;
+			break;
+	   case '7':
+	   		if (mode == 'm') mode = 7;
+			break;
+	   case '8':
+	   		if (mode == 'm') mode = 8;
+			break;
+	   case '9':
+	   		if (mode == 'm') mode = 9;
+			break;
+	   case 'b':
+	   		buzzer_on_off();
+			break;
+	   case 'z':	
+	   default :
+			mode = 'z';
+			break;
+	}	           
+	 	
+	data = '';
+}

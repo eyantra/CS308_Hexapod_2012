@@ -1,0 +1,514 @@
+                        .module main.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\main.c
+ 0000                   .dbfunc e main _main fV
+                        .area efunc_lit(rom, con, rel)
+ 0000           L28:
+ 0000 005300            .eaddr `L9
+ 0003 005900            .eaddr `L10
+ 0006 005F00            .eaddr `L11
+ 0009 006500            .eaddr `L12
+ 000C 006B00            .eaddr `L13
+ 000F 007200            .eaddr `L14
+ 0012 007900            .eaddr `L15
+ 0015 000C01            .eaddr `L7
+ 0018 000C01            .eaddr `L7
+ 001B 000C01            .eaddr `L7
+ 001E 00AA00            .eaddr `L18
+ 0021 00B000            .eaddr `L19
+ 0024 00B600            .eaddr `L20
+ 0027 00BC00            .eaddr `L21
+ 002A 000C01            .eaddr `L7
+ 002D 000C01            .eaddr `L7
+ 0030 000C01            .eaddr `L7
+ 0033 000C01            .eaddr `L7
+ 0036 000C01            .eaddr `L7
+ 0039 000C01            .eaddr `L7
+ 003C 00CA00            .eaddr `L24
+ 003F 00FB00            .eaddr `L25
+ 0042 000101            .eaddr `L26
+ 0045 000A01            .eaddr `L27
+                        .area text(rom, con, rel)
+                ;              i -> R20,R21
+                        .even
+ 0000           _main::
+ 0000 2297              sbiw R28,2
+ 0002                   .dbline -1
+ 0002                   .dbline 73
+ 0002           ; /**
+ 0002           ; @mainpage Building a locamotion based Hexapod Application
+ 0002           ; @author Group 6 Srijit Dutt 10305056
+ 0002           ; 
+ 0002           ; Mon 08 Nov 2010 12:49:10 AM IST 
+ 0002           ; 
+ 0002           ; ICC AVR 7
+ 0002           ; 
+ 0002           ; Conatins various functions for basic, advanced hexapod motions
+ 0002           ; 
+ 0002           ; 
+ 0002           ; */
+ 0002           ; 
+ 0002           ; /*********************************************************************************
+ 0002           ; 
+ 0002           ;    Copyright (c) 2010, ERTS Lab IIT Bombay erts@cse.iitb.ac.in               -*- c -*-
+ 0002           ;    All rights reserved.
+ 0002           ; 
+ 0002           ;    Redistribution and use in source and binary forms, with or without
+ 0002           ;    modification, are permitted provided that the following conditions are met:
+ 0002           ; 
+ 0002           ;    * Redistributions of source code must retain the above copyright
+ 0002           ;      notice, this list of conditions and the following disclaimer.
+ 0002           ; 
+ 0002           ;    * Redistributions in binary form must reproduce the above copyright
+ 0002           ;      notice, this list of conditions and the following disclaimer in
+ 0002           ;      the documentation and/or other materials provided with the
+ 0002           ;      distribution.
+ 0002           ; 
+ 0002           ;    * Neither the name of the copyright holders nor the names of
+ 0002           ;      contributors may be used to endorse or promote products derived
+ 0002           ;      from this software without specific prior written permission.
+ 0002           ; 
+ 0002           ;    * Source code can be used for academic purpose. 
+ 0002           ;        For commercial use permission form the author needs to be taken.
+ 0002           ; 
+ 0002           ;   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ 0002           ;   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ 0002           ;   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ 0002           ;   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ 0002           ;   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ 0002           ;   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ 0002           ;   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ 0002           ;   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ 0002           ;   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ 0002           ;   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ 0002           ;   POSSIBILITY OF SUCH DAMAGE. 
+ 0002           ; 
+ 0002           ;   Software released under Creative Commence cc by-nc-sa licence.
+ 0002           ;   For legal information refer to: 
+ 0002           ;   http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode
+ 0002           ; 
+ 0002           ; ********************************************************************************/
+ 0002           ; 
+ 0002           ; 
+ 0002           ; #include <iom2560v.h>
+ 0002           ; #include <macros.h>
+ 0002           ; #include "hexapod_macro.h"
+ 0002           ; #include "hexapod.h"
+ 0002           ; #include "hexapod_basic.h"
+ 0002           ; #include "hexapod_motions.h"
+ 0002           ; #include "gait.h"
+ 0002           ; #include "keyboard.h"
+ 0002           ; 
+ 0002           ; extern unsigned char data;
+ 0002           ; unsigned char mode;
+ 0002           ; unsigned int legNo;
+ 0002           ; unsigned int dir;
+ 0002           ; unsigned int tempDir;
+ 0002           ; double movementScaling;
+ 0002           ; 
+ 0002           ; void main(void) 
+ 0002           ; {
+ 0002                   .dbline 74
+ 0002           ;       int i = 100;
+ 0002 44E6              ldi R20,100
+ 0004 50E0              ldi R21,0
+ 0006                   .dbline 75
+ 0006           ;       init_devices();
+ 0006 0E940000          xcall _init_devices
+ 000A                   .dbline 77
+ 000A           ;       //insert your functional code here...
+ 000A           ;       servo_calibration(); //must be called as the first instruction
+ 000A 0E940000          xcall _servo_calibration
+ 000E                   .dbline 78
+ 000E           ;       servo_on();//turning on the servo supply
+ 000E 0E940000          xcall _servo_on
+ 0012                   .dbline 79
+ 0012           ;       initializeAngles();
+ 0012 0E940000          xcall _initializeAngles
+ 0016                   .dbline 80
+ 0016           ;       delay(ONE_SEC);
+ 0016 00E9              ldi R16,400
+ 0018 11E0              ldi R17,1
+ 001A 0E940000          xcall _delay
+ 001E                   .dbline 81
+ 001E           ;       delay(ONE_SEC);
+ 001E 00E9              ldi R16,400
+ 0020 11E0              ldi R17,1
+ 0022 0E940000          xcall _delay
+ 0026                   .dbline 82
+ 0026           ;       delay(ONE_SEC);
+ 0026 00E9              ldi R16,400
+ 0028 11E0              ldi R17,1
+ 002A 0E940000          xcall _delay
+ 002E                   .dbline 84
+ 002E           ; 
+ 002E           ;       delay(ONE_SEC);
+ 002E 00E9              ldi R16,400
+ 0030 11E0              ldi R17,1
+ 0032 0E940000          xcall _delay
+ 0036                   .dbline 91
+ 0036           ;       
+ 0036           ;       
+ 0036           ;       /*ripple_gait(LEG_1, 10);
+ 0036           ;       servo_calibration();
+ 0036           ;       delay(ONE_SEC);*/
+ 0036           ; 
+ 0036           ;       mode = 'z';
+ 0036 8AE7              ldi R24,122
+ 0038 80930A00          sts _mode,R24
+ 003C                   .dbline 92
+ 003C           ;       legNo = 1;
+ 003C 81E0              ldi R24,1
+ 003E 90E0              ldi R25,0
+ 0040 90930900          sts _legNo+1,R25
+ 0044 80930800          sts _legNo,R24
+ 0048                   .dbline 93
+ 0048           ;       dir = CLOCK_WISE;
+ 0048 90930700          sts _dir+1,R25
+ 004C 80930600          sts _dir,R24
+ 0050                   .dbline 94
+ 0050           ;       movementScaling = 1.0;
+ 0050 00E0              ldi R16,<L2
+ 0052 10E0              ldi R17,>L2
+ 0054 0E940000          xcall elpm32
+ 0058 10930100          sts _movementScaling+1,R17
+ 005C 00930000          sts _movementScaling,R16
+ 0060 30930300          sts _movementScaling+2+1,R19
+ 0064 20930200          sts _movementScaling+2,R18
+ 0068 D7C0              xjmp L4
+ 006A           L3:
+ 006A                   .dbline 96
+ 006A           ;                                               
+ 006A           ;       while(1){
+ 006A                   .dbline 98
+ 006A           ;       
+ 006A           ;               switch(mode){
+ 006A 40910A00          lds R20,_mode
+ 006E 5527              clr R21
+ 0070 4130              cpi R20,1
+ 0072 E0E0              ldi R30,0
+ 0074 5E07              cpc R21,R30
+ 0076 0CF4              brge X5
+ 0078 CFC0              xjmp L7
+ 007A           X5:
+ 007A           X0:
+ 007A 88E1              ldi R24,24
+ 007C 90E0              ldi R25,0
+ 007E 8417              cp R24,R20
+ 0080 9507              cpc R25,R21
+ 0082 0CF4              brge X6
+ 0084 C9C0              xjmp L7
+ 0086           X6:
+ 0086           X1:
+ 0086 03E0              ldi R16,3
+ 0088 10E0              ldi R17,0
+ 008A 9A01              movw R18,R20
+ 008C 0E940000          xcall empy16s
+ 0090 F801              movw R30,R16
+ 0092 80E0              ldi R24,<L28-3
+ 0094 90E0              ldi R25,>L28-3
+ 0096 E80F              add R30,R24
+ 0098 F91F              adc R31,R25
+ 009A 2790              elpm R2,Z+
+ 009C 3790              elpm R3,Z+
+ 009E 0690              elpm R0,Z
+ 00A0 0CBE              out 0x3C,R0
+ 00A2 F101              movw R30,R2
+ 00A4 1994              eijmp
+ 00A6           X2:
+ 00A6                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\main.c
+ 00A6                   .dbline 98
+ 00A6           L9:
+ 00A6                   .dbline 100
+ 00A6           ;                       case 1:
+ 00A6           ;                                tripod_gait(legNo, 1);
+ 00A6 21E0              ldi R18,1
+ 00A8 00910800          lds R16,_legNo
+ 00AC 0E940000          xcall _tripod_gait
+ 00B0                   .dbline 101
+ 00B0           ;                                break;
+ 00B0 B3C0              xjmp L7
+ 00B2           L10:
+ 00B2                   .dbline 103
+ 00B2           ;                       case 2:
+ 00B2           ;                                tripod_gait_2(legNo, 1);
+ 00B2 21E0              ldi R18,1
+ 00B4 00910800          lds R16,_legNo
+ 00B8 0E940000          xcall _tripod_gait_2
+ 00BC                   .dbline 104
+ 00BC           ;                                break;
+ 00BC ADC0              xjmp L7
+ 00BE           L11:
+ 00BE                   .dbline 106
+ 00BE           ;                       case 3:
+ 00BE           ;                                tripod_gait_continuous(legNo, 1);
+ 00BE 21E0              ldi R18,1
+ 00C0 00910800          lds R16,_legNo
+ 00C4 0E940000          xcall _tripod_gait_continuous
+ 00C8                   .dbline 107
+ 00C8           ;                                break;
+ 00C8 A7C0              xjmp L7
+ 00CA           L12:
+ 00CA                   .dbline 109
+ 00CA           ;                       case 4:
+ 00CA           ;                                tripod_gait_insect_continuous(legNo, 1);
+ 00CA 21E0              ldi R18,1
+ 00CC 00910800          lds R16,_legNo
+ 00D0 0E940000          xcall _tripod_gait_insect_continuous
+ 00D4                   .dbline 110
+ 00D4           ;                                break;
+ 00D4 A1C0              xjmp L7
+ 00D6           L13:
+ 00D6                   .dbline 112
+ 00D6           ;                       case 5:
+ 00D6           ;                                wave_gait(legNo, 1);
+ 00D6 21E0              ldi R18,1
+ 00D8 30E0              ldi R19,0
+ 00DA 00910800          lds R16,_legNo
+ 00DE 0E940000          xcall _wave_gait
+ 00E2                   .dbline 113
+ 00E2           ;                                break;
+ 00E2 9AC0              xjmp L7
+ 00E4           L14:
+ 00E4                   .dbline 115
+ 00E4           ;                       case 6:
+ 00E4           ;                                ripple_gait(legNo, 1);
+ 00E4 21E0              ldi R18,1
+ 00E6 30E0              ldi R19,0
+ 00E8 00910800          lds R16,_legNo
+ 00EC 0E940000          xcall _ripple_gait
+ 00F0                   .dbline 116
+ 00F0           ;                                break;
+ 00F0 93C0              xjmp L7
+ 00F2           L15:
+ 00F2                   .dbline 118
+ 00F2           ;                       case 7:
+ 00F2           ;                                tempDir = ((legNo + 1) % 6) + 1;
+ 00F2 26E0              ldi R18,6
+ 00F4 30E0              ldi R19,0
+ 00F6 00910800          lds R16,_legNo
+ 00FA 10910900          lds R17,_legNo+1
+ 00FE 0F5F              subi R16,255  ; offset = 1
+ 0100 1F4F              sbci R17,255
+ 0102 0E940000          xcall mod16u
+ 0106 C801              movw R24,R16
+ 0108 0196              adiw R24,1
+ 010A 90930500          sts _tempDir+1,R25
+ 010E 80930400          sts _tempDir,R24
+ 0112                   .dbline 119
+ 0112           ;                                tempDir = ((tempDir + 1) % 6) + 1;
+ 0112 26E0              ldi R18,6
+ 0114 30E0              ldi R19,0
+ 0116 8C01              movw R16,R24
+ 0118 0F5F              subi R16,255  ; offset = 1
+ 011A 1F4F              sbci R17,255
+ 011C 0E940000          xcall mod16u
+ 0120 C801              movw R24,R16
+ 0122 0196              adiw R24,1
+ 0124 90930500          sts _tempDir+1,R25
+ 0128 80930400          sts _tempDir,R24
+ 012C                   .dbline 120
+ 012C           ;                                tempDir = 7 - tempDir;
+ 012C 1C01              movw R2,R24
+ 012E 87E0              ldi R24,7
+ 0130 90E0              ldi R25,0
+ 0132 8219              sub R24,R2
+ 0134 9309              sbc R25,R3
+ 0136 90930500          sts _tempDir+1,R25
+ 013A 80930400          sts _tempDir,R24
+ 013E                   .dbline 121
+ 013E           ;                                two_leg_gait(legNo, tempDir, 1);
+ 013E 81E0              ldi R24,1
+ 0140 90E0              ldi R25,0
+ 0142 9983              std y+1,R25
+ 0144 8883              std y+0,R24
+ 0146 20910400          lds R18,_tempDir
+ 014A 00910800          lds R16,_legNo
+ 014E 0E940000          xcall _two_leg_gait
+ 0152                   .dbline 122
+ 0152           ;                                break;
+ 0152 62C0              xjmp L7
+ 0154           L18:
+ 0154                   .dbline 128
+ 0154           ;                       case 8:
+ 0154           ;                                break;
+ 0154           ;                       case 9:
+ 0154           ;                                break;
+ 0154           ;                       case 11:
+ 0154           ;                                tripod_turn_gait(dir, 1);
+ 0154 21E0              ldi R18,1
+ 0156 00910600          lds R16,_dir
+ 015A 0E940000          xcall _tripod_turn_gait
+ 015E                   .dbline 129
+ 015E           ;                                break;
+ 015E 5CC0              xjmp L7
+ 0160           L19:
+ 0160                   .dbline 131
+ 0160           ;                       case 12:
+ 0160           ;                                tripod_turn_gait_continuous(dir, 1);
+ 0160 21E0              ldi R18,1
+ 0162 00910600          lds R16,_dir
+ 0166 0E940000          xcall _tripod_turn_gait_continuous
+ 016A                   .dbline 132
+ 016A           ;                                break;
+ 016A 56C0              xjmp L7
+ 016C           L20:
+ 016C                   .dbline 134
+ 016C           ;                       case 13:
+ 016C           ;                                two_legged_turn_gait(dir, 1);
+ 016C 21E0              ldi R18,1
+ 016E 00910600          lds R16,_dir
+ 0172 0E940000          xcall _two_legged_turn_gait
+ 0176                   .dbline 135
+ 0176           ;                                break;  
+ 0176 50C0              xjmp L7
+ 0178           L21:
+ 0178                   .dbline 137
+ 0178           ;                       case 14:
+ 0178           ;                                if (dir == CLOCK_WISE){
+ 0178 80910600          lds R24,_dir
+ 017C 90910700          lds R25,_dir+1
+ 0180 8130              cpi R24,1
+ 0182 E0E0              ldi R30,0
+ 0184 9E07              cpc R25,R30
+ 0186 19F4              brne L22
+ 0188           X3:
+ 0188                   .dbline 137
+ 0188                   .dbline 138
+ 0188           ;                                       robot_rotate_clockwise_7_5();
+ 0188 0E940000          xcall _robot_rotate_clockwise_7_5
+ 018C                   .dbline 139
+ 018C           ;                                }
+ 018C 45C0              xjmp L7
+ 018E           L22:
+ 018E                   .dbline 140
+ 018E           ;                                else{
+ 018E                   .dbline 141
+ 018E           ;                                         robot_rotate_anticlockwise_7_5();
+ 018E 0E940000          xcall _robot_rotate_anticlockwise_7_5
+ 0192                   .dbline 142
+ 0192           ;                                }
+ 0192                   .dbline 143
+ 0192           ;                                break;
+ 0192 42C0              xjmp L7
+ 0194           L24:
+ 0194                   .dbline 145
+ 0194           ;                   case 21:
+ 0194           ;                                tempDir = ((legNo + 1) % 6) + 1;
+ 0194 26E0              ldi R18,6
+ 0196 30E0              ldi R19,0
+ 0198 00910800          lds R16,_legNo
+ 019C 10910900          lds R17,_legNo+1
+ 01A0 0F5F              subi R16,255  ; offset = 1
+ 01A2 1F4F              sbci R17,255
+ 01A4 0E940000          xcall mod16u
+ 01A8 C801              movw R24,R16
+ 01AA 0196              adiw R24,1
+ 01AC 90930500          sts _tempDir+1,R25
+ 01B0 80930400          sts _tempDir,R24
+ 01B4                   .dbline 146
+ 01B4           ;                                tempDir = ((tempDir + 1) % 6) + 1;
+ 01B4 26E0              ldi R18,6
+ 01B6 30E0              ldi R19,0
+ 01B8 8C01              movw R16,R24
+ 01BA 0F5F              subi R16,255  ; offset = 1
+ 01BC 1F4F              sbci R17,255
+ 01BE 0E940000          xcall mod16u
+ 01C2 C801              movw R24,R16
+ 01C4 0196              adiw R24,1
+ 01C6 90930500          sts _tempDir+1,R25
+ 01CA 80930400          sts _tempDir,R24
+ 01CE                   .dbline 147
+ 01CE           ;                                tempDir = 7 - tempDir;
+ 01CE 1C01              movw R2,R24
+ 01D0 87E0              ldi R24,7
+ 01D2 90E0              ldi R25,0
+ 01D4 8219              sub R24,R2
+ 01D6 9309              sbc R25,R3
+ 01D8 90930500          sts _tempDir+1,R25
+ 01DC 80930400          sts _tempDir,R24
+ 01E0                   .dbline 148
+ 01E0           ;                                pose(legNo, tempDir, 10);
+ 01E0 8AE0              ldi R24,10
+ 01E2 90E0              ldi R25,0
+ 01E4 9983              std y+1,R25
+ 01E6 8883              std y+0,R24
+ 01E8 20910400          lds R18,_tempDir
+ 01EC 00910800          lds R16,_legNo
+ 01F0 0E940000          xcall _pose
+ 01F4                   .dbline 149
+ 01F4           ;                                break;
+ 01F4 11C0              xjmp L7
+ 01F6           L25:
+ 01F6                   .dbline 151
+ 01F6           ;                       case 22:
+ 01F6           ;                                sway(24, CLOCK_WISE);
+ 01F6 21E0              ldi R18,1
+ 01F8 08E1              ldi R16,24
+ 01FA 10E0              ldi R17,0
+ 01FC 0E940000          xcall _sway
+ 0200                   .dbline 152
+ 0200           ;                                break;
+ 0200 0BC0              xjmp L7
+ 0202           L26:
+ 0202                   .dbline 154
+ 0202           ;                   case 23:
+ 0202           ;                                dance(4,5,6);
+ 0202 86E0              ldi R24,6
+ 0204 90E0              ldi R25,0
+ 0206 9983              std y+1,R25
+ 0208 8883              std y+0,R24
+ 020A 25E0              ldi R18,5
+ 020C 04E0              ldi R16,4
+ 020E 0E940000          xcall _dance
+ 0212                   .dbline 155
+ 0212           ;                                break;
+ 0212 02C0              xjmp L7
+ 0214           L27:
+ 0214                   .dbline 157
+ 0214           ;                       case 24:
+ 0214           ;                                climb();
+ 0214 0E940000          xcall _climb
+ 0218                   .dbline 158
+ 0218           ;                                break;
+ 0218                   .dbline 160
+ 0218           ;                   default:
+ 0218           ;                            break;
+ 0218           L7:
+ 0218                   .dbline 162
+ 0218           ;               }
+ 0218           ;       }       
+ 0218           L4:
+ 0218                   .dbline 96
+ 0218 28CF              xjmp L3
+ 021A           X4:
+ 021A                   .dbline -2
+ 021A           L1:
+ 021A                   .dbline 0 ; func end
+ 021A 2296              adiw R28,2
+ 021C 0895              ret
+ 021E                   .dbsym r i 20 I
+ 021E                   .dbend
+                        .area bss(ram, con, rel)
+ 0000                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\main.c
+ 0000           _movementScaling::
+ 0000                   .blkb 4
+ 0004                   .dbsym e movementScaling _movementScaling D
+ 0004           _tempDir::
+ 0004                   .blkb 2
+ 0006                   .dbsym e tempDir _tempDir i
+ 0006           _dir::
+ 0006                   .blkb 2
+ 0008                   .dbsym e dir _dir i
+ 0008           _legNo::
+ 0008                   .blkb 2
+ 000A                   .dbsym e legNo _legNo i
+ 000A           _mode::
+ 000A                   .blkb 1
+ 000B                   .dbsym e mode _mode c
+                        .area lit(rom, con, rel)
+ 0000           L2:
+ 0000 0000803F          .word 0x0,0x3f80
+ 0004           ; }
+ 0004           ; 
+ 0004           ; 

@@ -1,0 +1,701 @@
+                        .module keyboard.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\keyboard.c
+                        .area data(ram, con, rel)
+ 0000                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\keyboard.c
+ 0000           L2:
+ 0000                   .blkb 1
+                        .area idata
+ 0000 0F                .byte 15
+                        .area data(ram, con, rel)
+ 0001                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\keyboard.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\keyboard.c
+ 0000                   .dbfunc e keyboard_control _keyboard_control fV
+                        .area efunc_lit(rom, con, rel)
+ 0000           L81:
+ 0000 00A500            .eaddr `L17
+ 0003 009D01            .eaddr `L3
+ 0006 006C00            .eaddr `L13
+ 0009 009D01            .eaddr `L3
+ 000C 009D01            .eaddr `L3
+ 000F 009D01            .eaddr `L3
+ 0012 00DA00            .eaddr `L21
+ 0015 00FB00            .eaddr `L30
+ 0018 001C01            .eaddr `L39
+ 001B 003D01            .eaddr `L48
+ 001E 005E01            .eaddr `L57
+ 0021 007001            .eaddr `L62
+ 0024 008201            .eaddr `L67
+ 0027 008A01            .eaddr `L70
+ 002A 009201            .eaddr `L73
+ 002D 009D01            .eaddr `L3
+ 0030 009D01            .eaddr `L3
+ 0033 005A00            .eaddr `L10
+ 0036 009D01            .eaddr `L3
+ 0039 006100            .eaddr `L11
+                        .area text(rom, con, rel)
+ 0000                   .dbsym s change L2 c
+                        .even
+ 0000           _keyboard_control::
+ 0000 0E940000          xcall push_xgset300C
+ 0004                   .dbline -1
+ 0004                   .dbline 73
+ 0004           ; /***
+ 0004           ; Author : Srijit Dutt
+ 0004           ; Date Sun 07 Nov 2010 02:42:38 PM IST 
+ 0004           ; 
+ 0004           ; keyboard.c : File contains various advanced motion functions for the hexapod
+ 0004           ; Please include keyboard.h file to call function from this file
+ 0004           ; 
+ 0004           ; The various functions are : 
+ 0004           ; keyboard_control
+ 0004           ; */
+ 0004           ; 
+ 0004           ; /*********************************************************************************
+ 0004           ; 
+ 0004           ;    Copyright (c) 2010, ERTS Lab IIT Bombay erts@cse.iitb.ac.in               -*- c -*-
+ 0004           ;    All rights reserved.
+ 0004           ; 
+ 0004           ;    Redistribution and use in source and binary forms, with or without
+ 0004           ;    modification, are permitted provided that the following conditions are met:
+ 0004           ; 
+ 0004           ;    * Redistributions of source code must retain the above copyright
+ 0004           ;      notice, this list of conditions and the following disclaimer.
+ 0004           ; 
+ 0004           ;    * Redistributions in binary form must reproduce the above copyright
+ 0004           ;      notice, this list of conditions and the following disclaimer in
+ 0004           ;      the documentation and/or other materials provided with the
+ 0004           ;      distribution.
+ 0004           ; 
+ 0004           ;    * Neither the name of the copyright holders nor the names of
+ 0004           ;      contributors may be used to endorse or promote products derived
+ 0004           ;      from this software without specific prior written permission.
+ 0004           ; 
+ 0004           ;    * Source code can be used for academic purpose. 
+ 0004           ;        For commercial use permission form the author needs to be taken.
+ 0004           ; 
+ 0004           ;   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ 0004           ;   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ 0004           ;   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ 0004           ;   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ 0004           ;   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ 0004           ;   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ 0004           ;   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ 0004           ;   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ 0004           ;   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ 0004           ;   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ 0004           ;   POSSIBILITY OF SUCH DAMAGE. 
+ 0004           ; 
+ 0004           ;   Software released under Creative Commence cc by-nc-sa licence.
+ 0004           ;   For legal information refer to: 
+ 0004           ;   http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode
+ 0004           ; 
+ 0004           ; ********************************************************************************/
+ 0004           ; 
+ 0004           ; 
+ 0004           ; 
+ 0004           ; 
+ 0004           ; #include "hexapod_macro.h"
+ 0004           ; #include "hexapod.h"
+ 0004           ; #include "gait.h"
+ 0004           ; #include "hexapod_motions.h"
+ 0004           ; #include "hexapod_basic.h"
+ 0004           ; 
+ 0004           ; 
+ 0004           ; extern unsigned char data;//!< The keyborad command given by user
+ 0004           ; extern unsigned char mode;
+ 0004           ; extern unsigned int legNo;
+ 0004           ; extern unsigned int dir;
+ 0004           ; extern double movementScaling;
+ 0004           ; 
+ 0004           ; /**
+ 0004           ; Controls hexapod through keyboard using ZigBee communication
+ 0004           ; */
+ 0004           ; void keyboard_control(void) 
+ 0004           ; {     
+ 0004                   .dbline 76
+ 0004           ;       static char change = 15;
+ 0004           ;       
+ 0004           ;       switch(data) 
+ 0004 40910000          lds R20,_data
+ 0008 5527              clr R21
+ 000A 4C36              cpi R20,108
+ 000C E0E0              ldi R30,0
+ 000E 5E07              cpc R21,R30
+ 0010 09F4              brne X37
+ 0012 4CC0              xjmp L9
+ 0014           X37:
+ 0014           X0:
+ 0014 4D36              cpi R20,109
+ 0016 E0E0              ldi R30,0
+ 0018 5E07              cpc R21,R30
+ 001A 09F4              brne X38
+ 001C 3FC0              xjmp L7
+ 001E           X38:
+ 001E           X1:
+ 001E 8DE6              ldi R24,109
+ 0020 90E0              ldi R25,0
+ 0022 8417              cp R24,R20
+ 0024 9507              cpc R25,R21
+ 0026 24F1              brlt L79
+ 0028           X2:
+ 0028           L78:
+ 0028 4B32              cpi R20,43
+ 002A E0E0              ldi R30,0
+ 002C 5E07              cpc R21,R30
+ 002E 0CF4              brge X39
+ 0030 84C1              xjmp L3
+ 0032           X39:
+ 0032           X3:
+ 0032 8EE3              ldi R24,62
+ 0034 90E0              ldi R25,0
+ 0036 8417              cp R24,R20
+ 0038 9507              cpc R25,R21
+ 003A 84F0              brlt L80
+ 003C           X4:
+ 003C 03E0              ldi R16,3
+ 003E 10E0              ldi R17,0
+ 0040 9A01              movw R18,R20
+ 0042 0E940000          xcall empy16s
+ 0046 F801              movw R30,R16
+ 0048 80E0              ldi R24,<L81-129
+ 004A 90E0              ldi R25,>L81-129
+ 004C E80F              add R30,R24
+ 004E F91F              adc R31,R25
+ 0050 2790              elpm R2,Z+
+ 0052 3790              elpm R3,Z+
+ 0054 0690              elpm R0,Z
+ 0056 0CBE              out 0x3C,R0
+ 0058 F101              movw R30,R2
+ 005A 1994              eijmp
+ 005C           X5:
+ 005C                   .dbfile C:\Users\ERTSLA~1\Downloads\BUILDI~2\keyboard.c
+ 005C           L80:
+ 005C 4236              cpi R20,98
+ 005E E0E0              ldi R30,0
+ 0060 5E07              cpc R21,R30
+ 0062 09F4              brne X40
+ 0064 67C1              xjmp L76
+ 0066           X40:
+ 0066           X6:
+ 0066 4436              cpi R20,100
+ 0068 E0E0              ldi R30,0
+ 006A 5E07              cpc R21,R30
+ 006C 89F1              breq L12
+ 006E           X7:
+ 006E 65C1              xjmp L3
+ 0070           L79:
+ 0070 4337              cpi R20,115
+ 0072 E0E0              ldi R30,0
+ 0074 5E07              cpc R21,R30
+ 0076 79F0              breq L6
+ 0078           X8:
+ 0078 4437              cpi R20,116
+ 007A E0E0              ldi R30,0
+ 007C 5E07              cpc R21,R30
+ 007E 91F0              breq L8
+ 0080           X9:
+ 0080 4337              cpi R20,115
+ 0082 E0E0              ldi R30,0
+ 0084 5E07              cpc R21,R30
+ 0086 0CF4              brge X41
+ 0088 58C1              xjmp L3
+ 008A           X41:
+ 008A           X10:
+ 008A           L83:
+ 008A 4A37              cpi R20,122
+ 008C E0E0              ldi R30,0
+ 008E 5E07              cpc R21,R30
+ 0090 09F4              brne X42
+ 0092 53C1              xjmp L77
+ 0094           X42:
+ 0094           X11:
+ 0094 52C1              xjmp L3
+ 0096           L6:
+ 0096                   .dbline 79
+ 0096           ;       {
+ 0096           ;          case 's': //mode to reset the hexapod
+ 0096           ;                servo_calibration();
+ 0096 0E940000          xcall _servo_calibration
+ 009A                   .dbline 80
+ 009A           ;                        break; 
+ 009A 52C1              xjmp L4
+ 009C           L7:
+ 009C                   .dbline 82
+ 009C           ;          case 'm': //mode to move the hexapod
+ 009C           ;                mode = 'm';
+ 009C 8DE6              ldi R24,109
+ 009E 80930000          sts _mode,R24
+ 00A2                   .dbline 83
+ 00A2           ;                        break;
+ 00A2 4EC1              xjmp L4
+ 00A4           L8:
+ 00A4                   .dbline 85
+ 00A4           ;          case 't': //mode to turn the hexapod
+ 00A4           ;                       mode = 't';
+ 00A4 84E7              ldi R24,116
+ 00A6 80930000          sts _mode,R24
+ 00AA                   .dbline 86
+ 00AA           ;                       break;
+ 00AA 4AC1              xjmp L4
+ 00AC           L9:
+ 00AC                   .dbline 88
+ 00AC           ;          case 'l':
+ 00AC           ;                       mode = 'l';
+ 00AC 8CE6              ldi R24,108
+ 00AE 80930000          sts _mode,R24
+ 00B2                   .dbline 89
+ 00B2           ;                       break;
+ 00B2 46C1              xjmp L4
+ 00B4           L10:
+ 00B4                   .dbline 91
+ 00B4           ;          case '<':
+ 00B4           ;                       dir = CLOCK_WISE;
+ 00B4 81E0              ldi R24,1
+ 00B6 90E0              ldi R25,0
+ 00B8 90930100          sts _dir+1,R25
+ 00BC 80930000          sts _dir,R24
+ 00C0                   .dbline 92
+ 00C0           ;                       break;
+ 00C0 3FC1              xjmp L4
+ 00C2           L11:
+ 00C2                   .dbline 94
+ 00C2           ;          case '>':
+ 00C2           ;                       dir = ANTI_CLOCK_WISE;
+ 00C2 2224              clr R2
+ 00C4 3324              clr R3
+ 00C6 30920100          sts _dir+1,R3
+ 00CA 20920000          sts _dir,R2
+ 00CE                   .dbline 95
+ 00CE           ;                       break;
+ 00CE 38C1              xjmp L4
+ 00D0           L12:
+ 00D0                   .dbline 97
+ 00D0           ;          case 'd':
+ 00D0           ;                       mode = 'd';
+ 00D0 84E6              ldi R24,100
+ 00D2 80930000          sts _mode,R24
+ 00D6                   .dbline 98
+ 00D6           ;                       break;
+ 00D6 34C1              xjmp L4
+ 00D8           L13:
+ 00D8                   .dbline 100
+ 00D8           ;          case '-': // case num-2
+ 00D8           ;                       movementScaling -= 0.1;
+ 00D8 40900200          lds R4,_movementScaling+2
+ 00DC 50900300          lds R5,_movementScaling+2+1
+ 00E0 20900000          lds R2,_movementScaling
+ 00E4 30900100          lds R3,_movementScaling+1
+ 00E8 00E0              ldi R16,<L14
+ 00EA 10E0              ldi R17,>L14
+ 00EC 0E940000          xcall elpm32
+ 00F0 3A93              st -y,R19
+ 00F2 2A93              st -y,R18
+ 00F4 1A93              st -y,R17
+ 00F6 0A93              st -y,R16
+ 00F8 8101              movw R16,R2
+ 00FA 9201              movw R18,R4
+ 00FC 0E940000          xcall fpsub2
+ 0100 10930100          sts _movementScaling+1,R17
+ 0104 00930000          sts _movementScaling,R16
+ 0108 30930300          sts _movementScaling+2+1,R19
+ 010C 20930200          sts _movementScaling+2,R18
+ 0110                   .dbline 101
+ 0110           ;                       if (movementScaling < 0.1) movementScaling = 0.1;
+ 0110 1801              movw R2,R16
+ 0112 2901              movw R4,R18
+ 0114 00E0              ldi R16,<L14
+ 0116 10E0              ldi R17,>L14
+ 0118 0E940000          xcall elpm32
+ 011C 3A93              st -y,R19
+ 011E 2A93              st -y,R18
+ 0120 1A93              st -y,R17
+ 0122 0A93              st -y,R16
+ 0124 8101              movw R16,R2
+ 0126 9201              movw R18,R4
+ 0128 0E940000          xcall fpcmp2
+ 012C 0CF0              brlt X43
+ 012E 08C1              xjmp L4
+ 0130           X43:
+ 0130           X12:
+ 0130                   .dbline 101
+ 0130 00E0              ldi R16,<L14
+ 0132 10E0              ldi R17,>L14
+ 0134 0E940000          xcall elpm32
+ 0138 10930100          sts _movementScaling+1,R17
+ 013C 00930000          sts _movementScaling,R16
+ 0140 30930300          sts _movementScaling+2+1,R19
+ 0144 20930200          sts _movementScaling+2,R18
+ 0148                   .dbline 102
+ 0148           ;                       break;
+ 0148 FBC0              xjmp L4
+ 014A           L17:
+ 014A                   .dbline 104
+ 014A           ;          case '+': // case num-8 
+ 014A           ;                       movementScaling += 0.1;
+ 014A 40900200          lds R4,_movementScaling+2
+ 014E 50900300          lds R5,_movementScaling+2+1
+ 0152 20900000          lds R2,_movementScaling
+ 0156 30900100          lds R3,_movementScaling+1
+ 015A 00E0              ldi R16,<L14
+ 015C 10E0              ldi R17,>L14
+ 015E 0E940000          xcall elpm32
+ 0162 3A93              st -y,R19
+ 0164 2A93              st -y,R18
+ 0166 1A93              st -y,R17
+ 0168 0A93              st -y,R16
+ 016A 8101              movw R16,R2
+ 016C 9201              movw R18,R4
+ 016E 0E940000          xcall fpadd2
+ 0172 10930100          sts _movementScaling+1,R17
+ 0176 00930000          sts _movementScaling,R16
+ 017A 30930300          sts _movementScaling+2+1,R19
+ 017E 20930200          sts _movementScaling+2,R18
+ 0182                   .dbline 105
+ 0182           ;                       if (movementScaling > 1.0) movementScaling = 1.0;
+ 0182 80E0              ldi R24,<_movementScaling
+ 0184 90E0              ldi R25,>_movementScaling
+ 0186 00E0              ldi R16,<L20
+ 0188 10E0              ldi R17,>L20
+ 018A 0E940000          xcall elpm32
+ 018E 9A93              st -y,R25
+ 0190 8A93              st -y,R24
+ 0192 0E940000          xcall fpcmp1
+ 0196 0CF0              brlt X44
+ 0198 D3C0              xjmp L4
+ 019A           X44:
+ 019A           X13:
+ 019A                   .dbline 105
+ 019A 00E0              ldi R16,<L20
+ 019C 10E0              ldi R17,>L20
+ 019E 0E940000          xcall elpm32
+ 01A2 10930100          sts _movementScaling+1,R17
+ 01A6 00930000          sts _movementScaling,R16
+ 01AA 30930300          sts _movementScaling+2+1,R19
+ 01AE 20930200          sts _movementScaling+2,R18
+ 01B2                   .dbline 106
+ 01B2           ;                       break;
+ 01B2 C6C0              xjmp L4
+ 01B4           L21:
+ 01B4                   .dbline 108
+ 01B4           ;          case '1': 
+ 01B4           ;                       if (mode == 'l') legNo = 1;
+ 01B4 80910000          lds R24,_mode
+ 01B8 8C36              cpi R24,108
+ 01BA 31F4              brne L22
+ 01BC           X14:
+ 01BC                   .dbline 108
+ 01BC 81E0              ldi R24,1
+ 01BE 90E0              ldi R25,0
+ 01C0 90930100          sts _legNo+1,R25
+ 01C4 80930000          sts _legNo,R24
+ 01C8           L22:
+ 01C8                   .dbline 109
+ 01C8           ;                       if (mode == 'm') mode = 1;
+ 01C8 80910000          lds R24,_mode
+ 01CC 8D36              cpi R24,109
+ 01CE 19F4              brne L24
+ 01D0           X15:
+ 01D0                   .dbline 109
+ 01D0 81E0              ldi R24,1
+ 01D2 80930000          sts _mode,R24
+ 01D6           L24:
+ 01D6                   .dbline 110
+ 01D6           ;                       if (mode == 't') mode = 11;
+ 01D6 80910000          lds R24,_mode
+ 01DA 8437              cpi R24,116
+ 01DC 19F4              brne L26
+ 01DE           X16:
+ 01DE                   .dbline 110
+ 01DE 8BE0              ldi R24,11
+ 01E0 80930000          sts _mode,R24
+ 01E4           L26:
+ 01E4                   .dbline 111
+ 01E4           ;                       if (mode == 'd') mode = 21;
+ 01E4 80910000          lds R24,_mode
+ 01E8 8436              cpi R24,100
+ 01EA 09F0              breq X45
+ 01EC A9C0              xjmp L4
+ 01EE           X45:
+ 01EE           X17:
+ 01EE                   .dbline 111
+ 01EE 85E1              ldi R24,21
+ 01F0 80930000          sts _mode,R24
+ 01F4                   .dbline 112
+ 01F4           ;                       break;
+ 01F4 A5C0              xjmp L4
+ 01F6           L30:
+ 01F6                   .dbline 114
+ 01F6           ;          case '2':
+ 01F6           ;                        if (mode == 'l') legNo = 2;
+ 01F6 80910000          lds R24,_mode
+ 01FA 8C36              cpi R24,108
+ 01FC 31F4              brne L31
+ 01FE           X18:
+ 01FE                   .dbline 114
+ 01FE 82E0              ldi R24,2
+ 0200 90E0              ldi R25,0
+ 0202 90930100          sts _legNo+1,R25
+ 0206 80930000          sts _legNo,R24
+ 020A           L31:
+ 020A                   .dbline 115
+ 020A           ;                        if (mode == 'm') mode = 2;
+ 020A 80910000          lds R24,_mode
+ 020E 8D36              cpi R24,109
+ 0210 19F4              brne L33
+ 0212           X19:
+ 0212                   .dbline 115
+ 0212 82E0              ldi R24,2
+ 0214 80930000          sts _mode,R24
+ 0218           L33:
+ 0218                   .dbline 116
+ 0218           ;                        if (mode == 't') mode = 12;
+ 0218 80910000          lds R24,_mode
+ 021C 8437              cpi R24,116
+ 021E 19F4              brne L35
+ 0220           X20:
+ 0220                   .dbline 116
+ 0220 8CE0              ldi R24,12
+ 0222 80930000          sts _mode,R24
+ 0226           L35:
+ 0226                   .dbline 117
+ 0226           ;                        if (mode == 'd') mode = 22; 
+ 0226 80910000          lds R24,_mode
+ 022A 8436              cpi R24,100
+ 022C 09F0              breq X46
+ 022E 88C0              xjmp L4
+ 0230           X46:
+ 0230           X21:
+ 0230                   .dbline 117
+ 0230 86E1              ldi R24,22
+ 0232 80930000          sts _mode,R24
+ 0236                   .dbline 118
+ 0236           ;                        break;
+ 0236 84C0              xjmp L4
+ 0238           L39:
+ 0238                   .dbline 120
+ 0238           ;          case '3':
+ 0238           ;                       if (mode == 'l') legNo = 3; 
+ 0238 80910000          lds R24,_mode
+ 023C 8C36              cpi R24,108
+ 023E 31F4              brne L40
+ 0240           X22:
+ 0240                   .dbline 120
+ 0240 83E0              ldi R24,3
+ 0242 90E0              ldi R25,0
+ 0244 90930100          sts _legNo+1,R25
+ 0248 80930000          sts _legNo,R24
+ 024C           L40:
+ 024C                   .dbline 121
+ 024C           ;                       if (mode == 'm') mode = 3;
+ 024C 80910000          lds R24,_mode
+ 0250 8D36              cpi R24,109
+ 0252 19F4              brne L42
+ 0254           X23:
+ 0254                   .dbline 121
+ 0254 83E0              ldi R24,3
+ 0256 80930000          sts _mode,R24
+ 025A           L42:
+ 025A                   .dbline 122
+ 025A           ;                       if (mode == 't') mode = 13;
+ 025A 80910000          lds R24,_mode
+ 025E 8437              cpi R24,116
+ 0260 19F4              brne L44
+ 0262           X24:
+ 0262                   .dbline 122
+ 0262 8DE0              ldi R24,13
+ 0264 80930000          sts _mode,R24
+ 0268           L44:
+ 0268                   .dbline 123
+ 0268           ;                       if (mode == 'd') mode = 23;
+ 0268 80910000          lds R24,_mode
+ 026C 8436              cpi R24,100
+ 026E 09F0              breq X47
+ 0270 67C0              xjmp L4
+ 0272           X47:
+ 0272           X25:
+ 0272                   .dbline 123
+ 0272 87E1              ldi R24,23
+ 0274 80930000          sts _mode,R24
+ 0278                   .dbline 124
+ 0278           ;                       break;
+ 0278 63C0              xjmp L4
+ 027A           L48:
+ 027A                   .dbline 126
+ 027A           ;          case '4':
+ 027A           ;                       if (mode == 'l') legNo = 4;
+ 027A 80910000          lds R24,_mode
+ 027E 8C36              cpi R24,108
+ 0280 31F4              brne L49
+ 0282           X26:
+ 0282                   .dbline 126
+ 0282 84E0              ldi R24,4
+ 0284 90E0              ldi R25,0
+ 0286 90930100          sts _legNo+1,R25
+ 028A 80930000          sts _legNo,R24
+ 028E           L49:
+ 028E                   .dbline 127
+ 028E           ;                       if (mode == 'm') mode = 4;
+ 028E 80910000          lds R24,_mode
+ 0292 8D36              cpi R24,109
+ 0294 19F4              brne L51
+ 0296           X27:
+ 0296                   .dbline 127
+ 0296 84E0              ldi R24,4
+ 0298 80930000          sts _mode,R24
+ 029C           L51:
+ 029C                   .dbline 128
+ 029C           ;                       if (mode == 't') mode = 14;
+ 029C 80910000          lds R24,_mode
+ 02A0 8437              cpi R24,116
+ 02A2 19F4              brne L53
+ 02A4           X28:
+ 02A4                   .dbline 128
+ 02A4 8EE0              ldi R24,14
+ 02A6 80930000          sts _mode,R24
+ 02AA           L53:
+ 02AA                   .dbline 129
+ 02AA           ;                       if (mode == 'd') mode = 24;
+ 02AA 80910000          lds R24,_mode
+ 02AE 8436              cpi R24,100
+ 02B0 09F0              breq X48
+ 02B2 46C0              xjmp L4
+ 02B4           X48:
+ 02B4           X29:
+ 02B4                   .dbline 129
+ 02B4 88E1              ldi R24,24
+ 02B6 80930000          sts _mode,R24
+ 02BA                   .dbline 130
+ 02BA           ;                       break;
+ 02BA 42C0              xjmp L4
+ 02BC           L57:
+ 02BC                   .dbline 132
+ 02BC           ;          case '5':
+ 02BC           ;                       if (mode == 'l') legNo = 5;
+ 02BC 80910000          lds R24,_mode
+ 02C0 8C36              cpi R24,108
+ 02C2 31F4              brne L58
+ 02C4           X30:
+ 02C4                   .dbline 132
+ 02C4 85E0              ldi R24,5
+ 02C6 90E0              ldi R25,0
+ 02C8 90930100          sts _legNo+1,R25
+ 02CC 80930000          sts _legNo,R24
+ 02D0           L58:
+ 02D0                   .dbline 133
+ 02D0           ;                       if (mode == 'm') mode = 5; 
+ 02D0 80910000          lds R24,_mode
+ 02D4 8D36              cpi R24,109
+ 02D6 A1F5              brne L4
+ 02D8           X31:
+ 02D8                   .dbline 133
+ 02D8 85E0              ldi R24,5
+ 02DA 80930000          sts _mode,R24
+ 02DE                   .dbline 134
+ 02DE           ;                       break;
+ 02DE 30C0              xjmp L4
+ 02E0           L62:
+ 02E0                   .dbline 136
+ 02E0           ;          case '6':
+ 02E0           ;                       if (mode == 'l') legNo = 6;
+ 02E0 80910000          lds R24,_mode
+ 02E4 8C36              cpi R24,108
+ 02E6 31F4              brne L63
+ 02E8           X32:
+ 02E8                   .dbline 136
+ 02E8 86E0              ldi R24,6
+ 02EA 90E0              ldi R25,0
+ 02EC 90930100          sts _legNo+1,R25
+ 02F0 80930000          sts _legNo,R24
+ 02F4           L63:
+ 02F4                   .dbline 137
+ 02F4           ;                       if (mode == 'm') mode = 6;
+ 02F4 80910000          lds R24,_mode
+ 02F8 8D36              cpi R24,109
+ 02FA 11F5              brne L4
+ 02FC           X33:
+ 02FC                   .dbline 137
+ 02FC 86E0              ldi R24,6
+ 02FE 80930000          sts _mode,R24
+ 0302                   .dbline 138
+ 0302           ;                       break;
+ 0302 1EC0              xjmp L4
+ 0304           L67:
+ 0304                   .dbline 140
+ 0304           ;          case '7':
+ 0304           ;                       if (mode == 'm') mode = 7;
+ 0304 80910000          lds R24,_mode
+ 0308 8D36              cpi R24,109
+ 030A D1F4              brne L4
+ 030C           X34:
+ 030C                   .dbline 140
+ 030C 87E0              ldi R24,7
+ 030E 80930000          sts _mode,R24
+ 0312                   .dbline 141
+ 0312           ;                       break;
+ 0312 16C0              xjmp L4
+ 0314           L70:
+ 0314                   .dbline 143
+ 0314           ;          case '8':
+ 0314           ;                       if (mode == 'm') mode = 8;
+ 0314 80910000          lds R24,_mode
+ 0318 8D36              cpi R24,109
+ 031A 91F4              brne L4
+ 031C           X35:
+ 031C                   .dbline 143
+ 031C 88E0              ldi R24,8
+ 031E 80930000          sts _mode,R24
+ 0322                   .dbline 144
+ 0322           ;                       break;
+ 0322 0EC0              xjmp L4
+ 0324           L73:
+ 0324                   .dbline 146
+ 0324           ;          case '9':
+ 0324           ;                       if (mode == 'm') mode = 9;
+ 0324 80910000          lds R24,_mode
+ 0328 8D36              cpi R24,109
+ 032A 51F4              brne L4
+ 032C           X36:
+ 032C                   .dbline 146
+ 032C 89E0              ldi R24,9
+ 032E 80930000          sts _mode,R24
+ 0332                   .dbline 147
+ 0332           ;                       break;
+ 0332 06C0              xjmp L4
+ 0334           L76:
+ 0334                   .dbline 149
+ 0334           ;          case 'b':
+ 0334           ;                       buzzer_on_off();
+ 0334 0E940000          xcall _buzzer_on_off
+ 0338                   .dbline 150
+ 0338           ;                       break;
+ 0338 03C0              xjmp L4
+ 033A           L77:
+ 033A           L3:
+ 033A                   .dbline 153
+ 033A           ;          case 'z':    
+ 033A           ;          default :
+ 033A           ;                       mode = 'z';
+ 033A 8AE7              ldi R24,122
+ 033C 80930000          sts _mode,R24
+ 0340                   .dbline 154
+ 0340           ;                       break;
+ 0340           L4:
+ 0340                   .dbline 157
+ 0340           ;       }                  
+ 0340           ;               
+ 0340           ;       data = '';
+ 0340 2224              clr R2
+ 0342 20920000          sts _data,R2
+ 0346                   .dbline -2
+ 0346           L1:
+ 0346                   .dbline 0 ; func end
+ 0346 0C940000          xjmp pop_xgset300C
+ 034A                   .dbend
+                        .area lit(rom, con, rel)
+ 0000           L20:
+ 0000 0000803F          .word 0x0,0x3f80
+ 0004           L14:
+ 0004 CDCCCC3D          .word 0xcccd,0x3dcc
+ 0008           ; }

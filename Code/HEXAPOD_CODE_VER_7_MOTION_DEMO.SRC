@@ -1,0 +1,15 @@
+[Files]
+main.c
+gait.c
+hexapod.c
+hexapod_basic.c
+hexapod_motions.c
+keyboard.c
+[Headers]
+hexapod_basic.h
+gait.h
+hexapod_macro.h
+hexapod_motions.h
+keyboard.h
+hexapod.h
+[Documents]

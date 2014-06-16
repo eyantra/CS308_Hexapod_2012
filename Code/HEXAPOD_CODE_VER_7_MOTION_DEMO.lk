@@ -1,0 +1,1 @@
+main.o gait.o hexapod.o hexapod_basic.o hexapod_motions.o keyboard.o 
